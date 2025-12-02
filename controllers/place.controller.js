@@ -7,7 +7,7 @@ exports.createPlace = async (req, res,next) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   try {
     const { government } = req.body;
-    const gov = await Government.findById(government);
+    const gov = await Government.findById(government._id);
     if (!gov) return res.status(400).json({ message: 'Government not found' });
 
     const place = new Place(req.body);

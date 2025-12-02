@@ -43,8 +43,13 @@ Register a new user.
 ### Response
 ```json
 {
-  "message": "User created successfully",
-  "userId": 32
+  "token": "Access token here",
+  user:{
+     "name": "Ahmed Ali",
+  "email": "ahmed@example.com",
+  "password": "123456",
+  "phone": "+20123456789"
+  }
 }
 ```
 

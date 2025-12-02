@@ -1,5 +1,6 @@
 const Government = require('../models/Government');
 const { validationResult } = require('express-validator');
+const Place = require('../models/Place');
 
 exports.createGov = async (req, res,next) => {
   const errors = validationResult(req);
@@ -7,6 +8,14 @@ exports.createGov = async (req, res,next) => {
   try {
     const gov = new Government(req.body);
     await gov.save();
+    if (req.body?.places) {
+      const placesWithGovId = req.body.places.map(p => ({
+    ...p,
+    governmentId: gov._id,
+  }));
+
+  await Place.insertMany(placesWithGovId);
+    }
     res.status(201).json(gov);
   } catch (err) {
     next(err)
@@ -27,7 +36,11 @@ exports.getOne = async (req, res,next) => {
   try {
     const g = await Government.findById(req.params.id);
     if (!g) return res.status(404).json({ message: 'Not found' });
-    res.json(g);
+    const places = await Place.find({government: g._id });
+    res.json({
+      g:{...g,places}
+    }
+    );
   } catch (err) {
     console.error(err);
      next(err)
