@@ -1,6 +1,6 @@
 # 🇪🇬 Discover Egypt API Documentation
 
-REST API for user authentication, Egyptian cities, tourist places, and nightlife events.
+REST API for user authentication, Egyptian governments, tourist places, nightlife events, and products.
 
 ---
 
@@ -8,9 +8,10 @@ REST API for user authentication, Egyptian cities, tourist places, and nightlife
 - [Base URL](#base-url)
 - [Authentication](#authentication)
 - [Users](#users)
-- [Discover Egypt](#discover-egypt)
+- [Governments](#governments)
 - [Places](#places)
 - [Nights](#nights)
+- [Products](#products)
 - [Query Parameters](#query-parameters)
 - [Error Handling](#error-handling)
 - [Status Codes](#status-codes)
@@ -26,7 +27,7 @@ https://api.your-domain.com
 
 # Authentication
 
-## 🔹 POST /auth/signup
+## 🔹 POST /auth/register
 Register a new user.
 
 ### Request
@@ -96,57 +97,87 @@ Get new access token using refresh token.
 
 ---
 
-# Users
 
-## 🔹 GET /users/me  
-Requires JWT.
 
-### Response
+
+# Governments
+
+## 🔹 GET /governments  
+List all governments.
+
+**Response**
+```json
+[
+  { "id": "1", "name": "Cairo" },
+  { "id": "2", "name": "Giza" }
+]
+```
+
+---
+
+## 🔹 GET /governments/:id  
+Get a single government.
+
+**Response**
 ```json
 {
-  "id": 32,
-  "name": "Ahmed Ali",
-  "email": "ahmed@example.com",
-  "phone": "+20123...",
-  "cameFromIP": "156.192.22.14"
+  "id": "1",
+  "name": "Cairo"
+}
+```
+
+**Errors**
+- 404 — Government not found  
+
+---
+
+## 🔹 POST /governments
+Create a new government.
+
+**Request**
+```json
+{
+  "name": "Luxor"
+}
+```
+
+**Response**
+```json
+{
+  "message": "Government created successfully",
+  "id": "64f9a8b2c5a3e01d3a7f5678"
 }
 ```
 
 ---
 
-# Discover Egypt
+## 🔹 PUT /governments/:id
+Update a government.
 
-## 🔹 GET /discover-egypt  
-Returns 27 cities.
-
-### Example Response
+**Request**
 ```json
-[
-  {
-    "id": 1,
-    "name": "Cairo",
-    "desc": "Capital of Egypt",
-    "places": [
-      {
-        "id": 10,
-        "name": "Egyptian Museum",
-        "desc": "Ancient artifacts",
-        "ratings": 4.7,
-        "reviews": 913,
-        "categories": ["Cultural & Heritage Tourism"],
-        "subCategories": ["Museums", "Archaeological Sites"]
-      }
-    ]
-  }
-]
+{
+  "name": "Updated Name"
+}
 ```
 
-### Query Support
+**Response**
+```json
+{
+  "message": "Government updated successfully"
+}
 ```
-?limit=10&page=1
-?sort=name
-?category=Cultural%20&%20Heritage%20Tourism
-?city=Cairo
+
+---
+
+## 🔹 DELETE /governments/:id
+Delete a government.
+
+**Response**
+```json
+{
+  "message": "Government deleted successfully"
+}
 ```
 
 ---
@@ -154,19 +185,21 @@ Returns 27 cities.
 # Places
 
 ## 🔹 GET /places  
-List all places across Egypt.
+List all places.
 
-### Response
+**Response**
 ```json
 [
   {
-    "id": 10,
+    "id": "10",
     "name": "Karnak Temple",
     "desc": "Ancient Egyptian temple complex",
-    "ratings": 4.9,
-    "reviews": 1221,
-    "categories": ["Cultural & Heritage Tourism"],
-    "subCategories": ["Temples", "Archaeological Sites"]
+    "category": "Cultural & Heritage Tourism",
+    "subCategory": "Temples",
+    "location": "Luxor",
+    "locationIframe": "<iframe_here>",
+    "government": "64f9a8b2c5a3e01d3a7f5678",
+    "reviews": []
   }
 ]
 ```
@@ -176,18 +209,22 @@ List all places across Egypt.
 ## 🔹 GET /places/:id  
 Get a single place.
 
-### Response
+**Response**
 ```json
 {
-  "id": 10,
+  "id": "10",
   "name": "Karnak Temple",
   "desc": "Ancient Egyptian temple complex",
-  "categories": ["Cultural & Heritage Tourism"],
-  "subCategories": ["Temples"]
+  "category": "Cultural & Heritage Tourism",
+  "subCategory": "Temples",
+  "location": "Luxor",
+  "locationIframe": "<iframe_here>",
+  "government": "64f9a8b2c5a3e01d3a7f5678",
+  "reviews": []
 }
 ```
 
-### Error
+**Errors**
 - 404 — Place not found  
 
 ---
@@ -195,34 +232,43 @@ Get a single place.
 # Nights
 
 ## 🔹 GET /nights  
-Nightlife events in Egypt.
+List all nightlife events.
 
-### Example Response
+**Response**
 ```json
 [
   {
-    "id": 5,
+    "id": "5",
     "name": "Cairo Jazz Night",
     "location": "Zamalek",
-    "ratings": 4.6,
-    "reviews": 320,
-    "categories": [
-      "Cultural Events & Festivals",
-      "Live Music & Concerts",
-      "Local Cafés",
-      "Restaurants",
-      "Night Markets",
-      "Traditional Shows (Tanoura, Folk Dance)"
-    ]
+    "locationIframe": "<iframe_here>",
+    "category": "Live Music & Concerts",
+    "subCategory": "Jazz Events",
+    "reviews": []
   }
 ]
 ```
 
-### Query Parameters
-```
-?category=Live%20Music%20&%20Concerts
-?sort=ratings
-?page=1&limit=10
+---
+
+# Products
+
+## 🔹 GET /products  
+List all products.
+
+**Response**
+```json
+[
+  {
+    "id": "21",
+    "name": "Egyptian Papyrus",
+    "category": "Souvenirs",
+    "subCategory": "Arts & Crafts",
+    "price": 50,
+    "discount": 5,
+    "reviews": []
+  }
+]
 ```
 
 ---
@@ -237,14 +283,14 @@ Nightlife events in Egypt.
 ## Sorting
 ```
 ?sort=name
-?sort=-ratings  (descending)
+?sort=-price  (descending)
 ```
 
 ## Filtering
 ```
-?category=Eco%20&%20Adventure%20Tourism
-?city=Giza
-?subCategory=Museums
+?category=Souvenirs
+?government=Cairo
+?subCategory=Temples
 ```
 
 ---
@@ -252,7 +298,6 @@ Nightlife events in Egypt.
 # Error Handling Format
 
 Every error returns:
-
 ```json
 {
   "error": true,
@@ -274,5 +319,3 @@ Every error returns:
 | 404  | Not Found |
 | 409  | Conflict |
 | 500  | Server Error |
-
----
