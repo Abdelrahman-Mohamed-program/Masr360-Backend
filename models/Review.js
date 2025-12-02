@@ -1,0 +1,21 @@
+const mongoose = require('mongoose');
+
+const reviewSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  date: { type: Date, default: Date.now },
+  rate: { type: Number, min: 0, max: 5, required: true },
+  title: { type: String },
+  desc: { type: String },
+  type: { type: String, enum: ['place','product','night'], required: true },
+  targetId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    refPath: 'type' // dynamic reference to model name: 'place' -> 'Place', 'product' -> 'Product', 'night' -> 'Night'
+  },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+}, { timestamps: true });
+
+// Note: when using refPath, Mongoose expects the ref to match model names.
+// We'll ensure when creating reviews we pass type values: 'Place','Product','Night' or map them below.
+
+module.exports = mongoose.model('Review', reviewSchema);
