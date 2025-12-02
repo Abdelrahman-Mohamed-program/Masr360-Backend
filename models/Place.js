@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const placeSchema = new mongoose.Schema({
+  imgs:{type:Array},
   name: { type: String, required: true },
   desc: { type: String,required: true  },
   category: { type: String ,required: true },

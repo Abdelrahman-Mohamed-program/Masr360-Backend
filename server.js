@@ -31,7 +31,7 @@ app.use('/api/reviews', reviewRoutes);
 
 
 //testing route
-app.use( (req, res) => res.json({
+app.use((req, res) => res.json({
   message:"Api is running"
 }));
 
