@@ -65,7 +65,7 @@ exports.getOne = async (req, res) => {
   try {
     const r = await Review.findById(req.params.id).populate('user', 'username');
     if (!r) return res.status(404).json({ message: 'Not found' });
-    res.json(r);
+    res.json(r.toObject());
   } catch (err) { console.error(err); res.status(500).send('Server error'); }
 };
 

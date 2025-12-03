@@ -55,7 +55,7 @@ exports.updateGov = async (req, res, next) => {
       { new: true }
     );
     if (!updated) return res.status(404).json({ message: "Not found" });
-    res.json(updated);
+    res.json(updated.toObject());
   } catch (err) {
     console.error(err);
     next(err);

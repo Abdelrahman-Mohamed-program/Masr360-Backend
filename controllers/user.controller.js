@@ -12,7 +12,7 @@ exports.getOne = async (req, res,next) => {
   try {
     const u = await User.findById(req.params.id).select('-password');
     if (!u) return res.status(404).json({ message: 'Not found' });
-    res.json(u);
+    res.json(u.toObject());
   } catch (err) { console.error(err);  next(err)}
 };
 
@@ -22,7 +22,7 @@ exports.updateUser = async (req, res,next) => {
     // prevent role changes by non-admin (we will check in route)
     const updated = await User.findByIdAndUpdate(req.params.id, data, { new: true }).select('-password');
     if (!updated) return res.status(404).json({ message: 'Not found' });
-    res.json(updated);
+    res.json(updated.toObject());
   } catch (err) { console.error(err);  next(err) }
 };
 
