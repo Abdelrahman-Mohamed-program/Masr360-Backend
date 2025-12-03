@@ -22,7 +22,7 @@ exports.createPlace = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-   const list = await Place.find().populate("government", "name _id");
+   const list = await Place.find().populate("governorate", "name _id");
     res.json(list);
   } catch (err) {
     console.error(err);
