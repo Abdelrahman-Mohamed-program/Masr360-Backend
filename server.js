@@ -19,6 +19,11 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 app.use(express.json());
+app.use(cors({
+  origin: '*',            // allow all origins
+  methods: ['GET','POST','PUT','DELETE','PATCH','OPTIONS'], // allow all methods
+  allowedHeaders: ['Content-Type', 'Authorization'] // allow common headers
+}));
 
 
 app.use('/api/auth', authRoutes);
