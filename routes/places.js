@@ -9,7 +9,7 @@ router.get('/:id', placeCtrl.getOne);
 
 router.post('/'[
   check('name', 'name required').notEmpty(),
-  check('government', 'government required').notEmpty()
+  check('government', 'governorate required').notEmpty()
 ], placeCtrl.createPlace);
 
 router.put('/:id',placeCtrl.updatePlace);

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
-const govCtrl = require('../controllers/government.controller');
+const govCtrl = require('../controllers/governorate.controller');
 const { authMiddleware, adminOnly } = require('../middlewares/auth');
 
 router.get('/', govCtrl.getAll);

@@ -6,4 +6,4 @@ const governmentSchema = new mongoose.Schema({
   desc: { type: String,required: true  },
 }, { timestamps: true });
 
-module.exports = mongoose.model('Government', governmentSchema);
+module.exports = mongoose.model('Governorate', governmentSchema);

@@ -7,7 +7,7 @@ const cors = require('cors');
 //dependancies
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
-const govRoutes = require('./routes/governments');
+const govRoutes = require('./routes/Governorates');
 const placeRoutes = require('./routes/places');
 const productRoutes = require('./routes/products');
 const nightRoutes = require('./routes/nights');
@@ -23,7 +23,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/governments', govRoutes);
+app.use('/api/governorate', govRoutes);
 app.use('/api/places', placeRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/nights', nightRoutes);
