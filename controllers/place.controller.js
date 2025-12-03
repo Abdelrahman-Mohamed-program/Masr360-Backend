@@ -33,7 +33,7 @@ exports.getAll = async (req, res, next) => {
 exports.getOne = async (req, res,next) => {
   try {
     const p = await Place.findById(req.params.id)
-      .populate("government")
+      .populate("governorate")
       .populate("reviews");
     if (!p) return res.status(404).json({ message: "Not found" });
     res.json(p.toObject());
