@@ -25,7 +25,7 @@ exports.getOne = async (req, res,next) => {
   try {
     const p = await Product.findById(req.params.id).populate('reviews');
     if (!p) return res.status(404).json({ message: 'Not found' });
-    res.json(p);
+    res.json(p.toObject());
   } catch (err) { console.error(err);  next(err)}
 };
 
@@ -33,7 +33,7 @@ exports.updateProduct = async (req, res,next) => {
   try {
     const updated = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!updated) return res.status(404).json({ message: 'Not found' });
-    res.json(updated);
+    res.json(updated.toObject());
   } catch (err) { console.error(err);  next(err)}
 };
 

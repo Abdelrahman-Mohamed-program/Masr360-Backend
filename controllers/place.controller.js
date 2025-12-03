@@ -36,7 +36,7 @@ exports.getOne = async (req, res) => {
       .populate("government")
       .populate("reviews");
     if (!p) return res.status(404).json({ message: "Not found" });
-    res.json(p);
+    res.json(p.toObject());
   } catch (err) {
     console.error(err);
     next(err);

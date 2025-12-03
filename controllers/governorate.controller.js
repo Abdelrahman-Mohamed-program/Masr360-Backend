@@ -39,7 +39,7 @@ exports.getOne = async (req, res, next) => {
     if (!g) return res.status(404).json({ message: "Not found" });
     const places = await Place.find({ government: g._id });
     res.json({
-      g: { ...g, places },
+      g: { ...g.toObject(), places },
     });
   } catch (err) {
     console.error(err);
