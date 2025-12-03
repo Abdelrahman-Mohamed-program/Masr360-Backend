@@ -30,7 +30,7 @@ exports.getAll = async (req, res, next) => {
   }
 };
 
-exports.getOne = async (req, res) => {
+exports.getOne = async (req, res,next) => {
   try {
     const p = await Place.findById(req.params.id)
       .populate("government")
