@@ -23,7 +23,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
-app.use('/api/governorate', govRoutes);
+app.use('/api/governorates', govRoutes);
 app.use('/api/places', placeRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/nights', nightRoutes);
