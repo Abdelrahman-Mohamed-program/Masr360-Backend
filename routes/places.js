@@ -7,10 +7,7 @@ const { authMiddleware, adminOnly } = require('../middlewares/auth');
 router.get('/', placeCtrl.getAll);
 router.get('/:id', placeCtrl.getOne);
 
-router.post('/'[
-  check('name', 'name required').notEmpty(),
-  check('government', 'governorate required').notEmpty()
-], placeCtrl.createPlace);
+router.post('/', placeCtrl.createPlace);
 
 router.put('/:id',placeCtrl.updatePlace);
 router.delete('/:id', placeCtrl.deletePlace);

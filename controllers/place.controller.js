@@ -3,12 +3,10 @@ const Government = require("../models/Governorates");
 const { validationResult } = require("express-validator");
 
 exports.createPlace = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty())
-    return res.status(400).json({ errors: errors.array() });
+ 
   try {
-    const { government } = req.body;
-    const gov = await Government.findById(government._id);
+    const { governorate } = req.body;
+    const gov = await Government.findById(governorate);
     if (!gov) return res.status(400).json({ message: "Government not found" });
 
     const place = new Place(req.body);
