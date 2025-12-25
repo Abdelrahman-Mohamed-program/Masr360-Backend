@@ -1,55 +1,47 @@
-const mongoose = require('mongoose');
-
 const ticketSchema = new mongoose.Schema(
   {
-    // 1–to–1 relation with Place
     place: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Place',
       required: true,
-      unique: true, // ENFORCES 1–to–1
+      unique: true,
     },
 
     type: {
       type: String,
+      enum: ['free', 'static', 'pricePerAge', 'pricePerRegion', 'ageAndRegion'],
       required: true,
-      enum: ['standard', 'vip', 'family', 'student'] // optional, edit as needed
     },
 
     prices: {
-      pricePerRegion: {
-        egyptianPound: {
-          type: Number,
-          required: true,
-        },
-        foreign: {
-          type: Number,
-          required: true,
-        },
+      staticPrice: Number,
+
+      pricePerAge: {
+        children: Number,
+        adults: Number,
+        seniors: Number,
       },
 
-      pricePerAges: {
-        children: {
-          type: Number,
-          required: true,
+      pricePerRegion: {
+        egyptian: Number,
+        foreign: Number,
+      },
+
+      ageAndRegion: {
+        students: {
+          egyptian: Number,
+          foreign: Number,
         },
         adults: {
-          type: Number,
-          required: true,
+          egyptian: Number,
+          foreign: Number,
         },
         seniors: {
-          type: Number,
-          required: true,
+          egyptian: Number,
+          foreign: Number,
         },
-      },
-
-      staticPrice: {
-        type: Number,
-        required: true,
       },
     },
   },
   { timestamps: true }
 );
-
-module.exports = mongoose.model('Ticket', ticketSchema);
