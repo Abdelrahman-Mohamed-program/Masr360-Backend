@@ -27,7 +27,6 @@ exports.createReview = async (req, res) => {
     if (!modelMap[lowerType]) return res.status(400).json({ message: 'Invalid review type' });
 
     if (!mongoose.Types.ObjectId.isValid(type_id)) return res.status(400).json({ message: 'Invalid target id' });
-
     const target = await modelMap[lowerType].findById(type_id);
     if (!target) return res.status(404).json({ message: 'Target not found' });
 

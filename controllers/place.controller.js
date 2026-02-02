@@ -1,20 +1,26 @@
 const Place = require("../models/Place");
-const Government = require("../models/Governorates");
+const Governorate = require("../models/Governorates");
 const { validationResult } = require("express-validator");
 
 exports.createPlace = async (req, res, next) => {
- 
+  
   try {
+    const imgs = req.files;
+   
+
+    if (!Array.isArray(imgs) ) {
+      return res.status(400).json({ message: "imgs must be an array" });
+    }
     const { governorate } = req.body;
-    const gov = await Government.findById(governorate);
-    if (!gov) return res.status(400).json({ message: "Government not found" });
+    const gov = await Governorate.findById(governorate);
+    if (!gov) return res.status(400).json({ message: "Governorate not found" });
 
     const place = new Place(req.body);
     await place.save();
     res.status(201).json(place);
   } catch (err) {
     console.error(err);
-    res.status(500).send("Server error");
+   next(err)
   }
 };
 

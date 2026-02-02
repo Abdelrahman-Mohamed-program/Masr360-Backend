@@ -1,20 +1,32 @@
-const Government = require("../models/Governorates");
+const Governorate = require("../models/Governorates");
 const { validationResult } = require("express-validator");
 const Place = require("../models/Place");
 
 exports.createGov = async (req, res, next) => {
+  const img = `/uploads/governorates/${req.file.filename}`;
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
   try {
-    const gov = new Government(req.body);
+    const gov = new Governorate({
+      img,
+      name:req.body.name,
+      desc:req.body.desc,
+    });
     await gov.save();
-    if (req.body?.places) {
-      const placesWithGovId = req.body.places.map((p) => ({
-        ...p,
-        governmentId: gov._id,
-      }));
 
+    
+    if (req.body?.places) {
+      let places = req.body.places;
+      places = places.replace(/'/g, '"') //replacing all ' with "
+            console.log(places)
+      places = JSON.parse(places)
+
+
+      const placesWithGovId = places.map((p) => ({
+        ...p,
+        governorate: gov._id,
+      }));
       await Place.insertMany(placesWithGovId);
     }
     res.status(201).json(gov);
@@ -25,7 +37,7 @@ exports.createGov = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-    const list = await Government.find();
+    const list = await Governorate.find();
     res.json(list);
   } catch (err) {
     console.error(err);
@@ -35,9 +47,9 @@ exports.getAll = async (req, res, next) => {
 
 exports.getOne = async (req, res, next) => {
   try {
-    const g = await Government.findById(req.params.id);
+    const g = await Governorate.findById(req.params.id);
     if (!g) return res.status(404).json({ message: "Not found" });
-    console.log(typeof g._id, g._id);
+
     const places = await Place.find({ governorate: g._id });
     res.json({
       g: { ...g.toObject(), places },
@@ -50,9 +62,14 @@ exports.getOne = async (req, res, next) => {
 
 exports.updateGov = async (req, res, next) => {
   try {
-    const updated = await Government.findByIdAndUpdate(
+  const body = {...req.body}
+    if (req.file) {
+       body.img = `/uploads/governorates/${req.file.filename}`;
+    } 
+    
+    const updated = await Governorate.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      body,
       { new: true }
     );
     if (!updated) return res.status(404).json({ message: "Not found" });
@@ -65,7 +82,7 @@ exports.updateGov = async (req, res, next) => {
 
 exports.deleteGov = async (req, res, next) => {
   try {
-    const deleted = await Government.findByIdAndDelete(req.params.id);
+    const deleted = await Governorate.findByIdAndDelete(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Not found" });
     res.json({ message: "Deleted" });
   } catch (err) {
