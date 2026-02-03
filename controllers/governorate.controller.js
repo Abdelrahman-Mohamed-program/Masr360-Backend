@@ -37,8 +37,19 @@ exports.createGov = async (req, res, next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-    const list = await Governorate.find();
-    res.json(list);
+    const search = req.query.search||"";
+    const sort = req.query.sort? req.query.sort.split(","):"name";
+
+    let sortBy = {}
+
+    if (sort.length>1) {
+      sortBy[sort[0]]=sort[1];
+    }else{
+      sortBy[sort[0]]="asc"
+    }
+    
+    const governorates = await Governorate.find({name:{$regex:search,$options:"i"}}).sort(sortBy);
+    res.json(governorates);
   } catch (err) {
     console.error(err);
     next(err);
@@ -47,12 +58,12 @@ exports.getAll = async (req, res, next) => {
 
 exports.getOne = async (req, res, next) => {
   try {
-    const g = await Governorate.findById(req.params.id);
+    const g = await Governorate.findById(req.params.id).lean();
     if (!g) return res.status(404).json({ message: "Not found" });
 
     const places = await Place.find({ governorate: g._id });
     res.json({
-      g: { ...g.toObject(), places },
+      g: { ...g, places },
     });
   } catch (err) {
     console.error(err);

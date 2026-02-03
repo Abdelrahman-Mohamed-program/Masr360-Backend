@@ -12,6 +12,7 @@ const placeRoutes = require('./routes/places');
 const productRoutes = require('./routes/products');
 const nightRoutes = require('./routes/nights');
 const reviewRoutes = require('./routes/reviews');
+const categoriesRoutes = require('./routes/categories');
 const { errorHandler } = require('./middlewares/errorHandle');
 const PORT = process.env.PORT || 5000;
 const path = require ("path")
@@ -41,7 +42,7 @@ app.use('/api/v1/places', placeRoutes);
 app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/nights', nightRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
-
+app.use('/api/v1/categories', categoriesRoutes);
 
 //testing route
 app.use((req, res) => res.json({

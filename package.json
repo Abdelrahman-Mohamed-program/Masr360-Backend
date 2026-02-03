@@ -1,7 +1,8 @@
 {
   "scripts": {
     "dev": "nodemon server",
-    "start":"node server.js"
+    "start":"node server.js",
+       "vercel-build": "echo 'No build needed'"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
