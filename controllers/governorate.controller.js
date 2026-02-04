@@ -3,7 +3,9 @@ const { validationResult } = require("express-validator");
 const Place = require("../models/Place");
 
 exports.createGov = async (req, res, next) => {
-  const img = `/uploads/governorates/${req.file.filename}`;
+  if (req.file) {
+     const img = `/uploads/governorates/${req.file.filename}`;
+  }
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });

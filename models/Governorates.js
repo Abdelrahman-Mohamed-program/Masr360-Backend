@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const GovernorateSchema = new mongoose.Schema({
-  img:{type:String,required:true},
+  img:{type:String,required:false},
   name: { type: String, required: true },
   desc: { type: String,required: true  },
 }, { timestamps: true });
