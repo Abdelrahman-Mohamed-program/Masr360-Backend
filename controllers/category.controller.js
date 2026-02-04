@@ -1,7 +1,7 @@
 
 
 const Category = require("../models/Category");
-const subCategory = require("../models/Subcategory");
+const subCategory = require("../models/subCategory");
 const getAll = async (req, res, next) => {
   try {
     let filter = {};
