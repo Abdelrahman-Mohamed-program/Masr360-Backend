@@ -8,6 +8,7 @@ const placeSchema = new mongoose.Schema({
   locationIframe: { type: String ,required: true },
   governorate: { type: mongoose.Schema.Types.ObjectId, ref: 'Governorate', required: true },
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
+  subcategory: { type: mongoose.Schema.Types.ObjectId, ref: 'Subcategory', required: true },
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
 }, { timestamps: true });
 
