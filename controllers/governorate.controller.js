@@ -43,7 +43,7 @@ exports.createGov = async (req, res, next) => {
 exports.getAll = async (req, res, next) => {
   try {
     const search = req.query.search||"";
-    const sort = req.query.sort? req.query.sort.split(","):"name";
+    const sort = req.query.sort? req.query.sort.split(","):["name"];
 
     let sortBy = {}
 
