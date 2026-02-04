@@ -10,7 +10,7 @@ exports.createGov = async (req, res, next) => {
       let governorate = {  
       name:req.body.name,
       desc:req.body.desc,
-      lang:req.body.lang
+      lang:req.body.lang.toUpperCase()
     }
      if (req.file) {
      const img = `/uploads/governorates/${req.file.filename}`;
@@ -46,7 +46,7 @@ exports.getAll = async (req, res, next) => {
   try {
     const search = req.query.search||"";
     const sort = req.query.sort? req.query.sort.split(","):["name"];
-    const lang = req.query.lang?req.query.lang:"EN"
+    const lang = req.query.lang?req.query.lang.toUpperCase():"EN"
     let sortBy = {}
 
     if (sort.length>1) {
