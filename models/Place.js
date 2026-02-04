@@ -10,6 +10,7 @@ const placeSchema = new mongoose.Schema({
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true },
   subcategory: { type: mongoose.Schema.Types.ObjectId, ref: 'Subcategory', required: true },
   reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Review' }],
+  lang:{type:String,enum:["AR","EN"],required:true},
 }, { timestamps: true });
 
 module.exports = mongoose.model('Place', placeSchema);

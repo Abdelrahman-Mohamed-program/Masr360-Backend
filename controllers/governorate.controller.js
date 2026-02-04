@@ -44,7 +44,7 @@ exports.getAll = async (req, res, next) => {
   try {
     const search = req.query.search||"";
     const sort = req.query.sort? req.query.sort.split(","):["name"];
-
+    const lang = req.query.lang?req.query.lang:"EN"
     let sortBy = {}
 
     if (sort.length>1) {
@@ -53,7 +53,10 @@ exports.getAll = async (req, res, next) => {
       sortBy[sort[0]]="asc"
     }
     
-    const governorates = await Governorate.find({name:{$regex:search,$options:"i"}}).sort(sortBy);
+    const governorates = await Governorate.find({
+      name:{$regex:search,$options:"i"},
+      lang
+    }).sort(sortBy);
     res.json(governorates);
   } catch (err) {
     console.error(err);
@@ -66,7 +69,7 @@ exports.getOne = async (req, res, next) => {
     const g = await Governorate.findById(req.params.id).lean();
     if (!g) return res.status(404).json({ message: "Not found" });
 
-    const places = await Place.find({ governorate: g._id });
+    const places = await Place.find({ governorate: g._id});
     res.json({
       governorate: { ...g, places },
     });
