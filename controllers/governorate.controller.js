@@ -68,7 +68,7 @@ exports.getOne = async (req, res, next) => {
 
     const places = await Place.find({ governorate: g._id });
     res.json({
-      g: { ...g, places },
+      governorate: { ...g, places },
     });
   } catch (err) {
     console.error(err);
