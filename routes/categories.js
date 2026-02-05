@@ -11,4 +11,5 @@ router.get('/', categoryCntrl.getAll);
 router.get('/:id', categoryCntrl.getOne);
 router.put('/:id', categoryCntrl.updateOne);
 router.post('/', categoryCntrl.addOne);
+router.delete('/:id', categoryCntrl.addOne);
 module.exports = router;
