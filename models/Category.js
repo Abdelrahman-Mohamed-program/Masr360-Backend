@@ -15,7 +15,8 @@ const CategorySchema = new mongoose.Schema({
     ,
     parent:{
     type: mongoose.Schema.Types.ObjectId, ref: 'Category',
-    required: false
+    required: false,
+    default:null
     },
   lang:{
     type:String,enum:["AR","EN"],required:true
