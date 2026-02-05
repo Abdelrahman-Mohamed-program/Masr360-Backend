@@ -84,7 +84,7 @@ const updateOne = async (req,res,next)=>{
     const body = req.body;
 
     const updated = await Category.findByIdAndUpdate(req.params.id,body,{
-      new:true
+new: true, runValidators: true
     })
 
     if (!updated) return res.status(404).json({ message: 'Not found' });
