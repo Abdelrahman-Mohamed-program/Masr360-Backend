@@ -97,5 +97,22 @@ new: true, runValidators: true
     next(error)
   }
 }
-module.exports = {getAll,getOne,updateOne,addOne}
+
+const destroy = async (req,res,next)=>{
+  try {
+   
+   const d = Category.findByIdAndDelete(req.params.id);
+
+    if (!d) return res.status(404).json({ message: 'Not found' });
+ 
+    res.status(200).json({
+      message:"Deleted successfully"
+    }
+    )
+
+  } catch (error) {
+    next(error)
+  }
+}
+module.exports = {getAll,getOne,updateOne,addOne,destroy}
 
