@@ -4,7 +4,8 @@ const { check } = require('express-validator');
 const govCtrl = require('../controllers/governorate.controller');
 const { authMiddleware, adminOnly } = require('../middlewares/auth');
 const path = require("path")
-const multer = require("multer")
+const multer = require("multer");
+const validateId = require('../middlewares/validateId');
 //multer file upload
 const storage = multer.diskStorage({
         destination:(req,file,cb)=>{//the destination of where the file will be saved in the server
@@ -21,14 +22,14 @@ const upload = multer({
 })
 
 router.get('/', govCtrl.getAll);
-router.get('/:id', govCtrl.getOne);
+router.get('/:id',validateId, govCtrl.getOne);
 
 router.post('/',upload.single('img'), [
   check('name', 'name field required').notEmpty(),
 //   check('img', 'img field required').notEmpty()
 ], govCtrl.createGov);
 
-router.put('/:id',upload.single('img'), govCtrl.updateGov);
-router.delete('/:id',govCtrl.deleteGov);
+router.put('/:id',validateId,upload.single('img'), govCtrl.updateGov);
+router.delete('/:id',validateId,govCtrl.deleteGov);
 
 module.exports = router;

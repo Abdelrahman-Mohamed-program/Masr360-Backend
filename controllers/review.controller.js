@@ -22,12 +22,12 @@ exports.createReview = async (req, res) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   try {
-    const { username, rate, title, desc, type, type_id } = req.body;
+    const { username, rate, title, desc, type, targetId } = req.body;
     const lowerType = String(type).toLowerCase();
     if (!modelMap[lowerType]) return res.status(400).json({ message: 'Invalid review type' });
 
-    if (!mongoose.Types.ObjectId.isValid(type_id)) return res.status(400).json({ message: 'Invalid target id' });
-    const target = await modelMap[lowerType].findById(type_id);
+    if (!mongoose.Types.ObjectId.isValid(targetId)) return res.status(400).json({ message: 'Invalid target id' });
+    const target = await modelMap[lowerType].findById(targetId);
     if (!target) return res.status(404).json({ message: 'Target not found' });
 
     const review = new Review({
@@ -35,8 +35,8 @@ exports.createReview = async (req, res) => {
       rate,
       title,
       desc,
-      type: modelNameMap[lowerType],
-      target: type_id,
+      type: lowerType,
+      targetId,
       user: req.user ? req.user._id : undefined
     });
     await review.save();
@@ -55,42 +55,90 @@ exports.createReview = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const list = await Review.find().populate('user', 'username').sort({ createdAt: -1 });
+  
+    const sort = req.query.sort? req.query.sort.split(","):["createdAt"];
+    const search = req.query.search||"";
+    const limit = Number(req.query.limit)||5;
+    const page = Number(req.query.page)-1||0;
+
+    let filter = {}
+    let sortBy = {}
+    if (req.query.type) {
+      filter = {type:req.query.type.toLowerCase()};
+    }
+
+    if (sort.length>1) {
+      sortBy[sort[0]]=sort[1]==="desc"?-1:1;
+    }else{
+        sortBy[sort[0]]=1;
+    }
+
+    const list = await Review.find({
+      ...filter,
+      title:{
+        $regex:search,$options:"i"
+      }
+    }).populate('user', 'username').sort(sortBy).skip(page*limit).limit(limit);
     res.json(list);
   } catch (err) { console.error(err); res.status(500).send('Server error'); }
 };
 
 exports.getOne = async (req, res) => {
   try {
+      const id = req.params.id||"";
+    if (!id||!mongoose.isValidObjectId(id)) {
+      return res.status(400).json({
+        "message":"invalid id"
+      })
+    }
     const r = await Review.findById(req.params.id).populate('user', 'username');
     if (!r) return res.status(404).json({ message: 'Not found' });
     res.json(r.toObject());
   } catch (err) { console.error(err); res.status(500).send('Server error'); }
 };
+exports.updateOne = async (req, res) => {
+  try {
+
+    let {targetId,user,type} = req.body;
+    if (user) {
+    return res.status(403).json({
+        message:"invalid operation"
+      })
+    }
+    if (targetId||type) {
+     type = req.body.type?req.body.type.toLowerCase():"";
+     if (!modelMap[type]) return res.status(400).json({ message: 'Invalid review type' });
+      
+      if (!mongoose.Types.ObjectId.isValid(targetId)) return res.status(400).json({ message: 'Invalid target id' });
+     const target = await modelMap[type].findById(targetId);
+      if (!target) return res.status(404).json({ message: 'Target not found' });
+     
+    }
+
+    const r = await Review.findByIdAndUpdate(req.params.id,req.body,{new:true,runValidators:true})
+    if (!r) return res.status(404).json({ message: 'Not found' });
+    res.json({
+      r,
+      message:"updated"
+    });
+  } catch (err) { console.error(err); res.status(500).send('Server error'); }
+};
 
 exports.deleteReview = async (req, res) => {
   try {
-    const r = await Review.findById(req.params.id);
+    const r = await Review.findById(req.params.id).populate('user','_id');
+   
+    
     if (!r) return res.status(404).json({ message: 'Not found' });
 
     // only author or admin can delete
     if (!req.user) return res.status(401).json({ message: 'Login required' });
-    if (req.user.role !== 'admin' && String(r.user) !== String(req.user._id)) {
+    if (req.user.role !== 'admin' && String(r.user._id) !== String(req.user._id)) {
       return res.status(403).json({ message: 'Not authorized to delete' });
     }
 
-    // remove from target
-    const typeLower = r.type.toLowerCase();
-    const model = modelMap[typeLower];
-    if (model) {
-      const target = await model.findById(r.target);
-      if (target) {
-        target.reviews = (target.reviews || []).filter(id => String(id) !== String(r._id));
-        await target.save();
-      }
-    }
-
-    await r.remove();
+   await  r.deleteOne();
+      
     res.json({ message: 'Deleted' });
   } catch (err) { console.error(err); res.status(500).send('Server error'); }
 };

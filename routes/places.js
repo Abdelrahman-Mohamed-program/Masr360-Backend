@@ -4,7 +4,8 @@ const { check } = require('express-validator');
 const placeCtrl = require('../controllers/place.controller');
 const multer =  require("multer")
 const { authMiddleware, adminOnly } = require('../middlewares/auth');
-const path = require("path")
+const path = require("path");
+const validateId = require('../middlewares/validateId');
 const storage = multer.diskStorage({
         destination:(req,file,cb)=>{//the destination of where the file will be saved in the server
             cb(null,path.join(__dirname,"../uploads/places")) 
@@ -20,11 +21,11 @@ const upload = multer({
 
 
 router.get('/', placeCtrl.getAll);
-router.get('/:id', placeCtrl.getOne);
+router.get('/:id', validateId,placeCtrl.getOne);
 
 router.post('/',upload.array('imgs',20), placeCtrl.createPlace);
 
-router.put('/:id',placeCtrl.updatePlace);
-router.delete('/:id', placeCtrl.deletePlace);
+router.put('/:id',validateId,placeCtrl.updatePlace);
+router.delete('/:id', validateId,placeCtrl.deletePlace);
 
 module.exports = router;

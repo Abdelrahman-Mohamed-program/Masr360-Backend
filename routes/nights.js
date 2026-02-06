@@ -4,7 +4,8 @@ const { check } = require('express-validator');
 const nightCtrl = require('../controllers/night.controller');
 const { authMiddleware, adminOnly } = require('../middlewares/auth');
 const path = require("path")
-const multer = require("multer")
+const multer = require("multer");
+const validateId = require('../middlewares/validateId');
 //multer file upload
 const storage = multer.diskStorage({
         destination:(req,file,cb)=>{//the destination of where the file will be saved in the server
@@ -21,13 +22,13 @@ const upload = multer({
 })
 
 router.get('/', nightCtrl.getAll);
-router.get('/:id', nightCtrl.getOne);
+router.get('/:id', validateId,nightCtrl.getOne);
 
 router.post('/',upload.single('img')  ,[
   check('name', 'name required').notEmpty()
 ], nightCtrl.createNight);
 
-router.put('/:id', upload.none(), nightCtrl.updateNight);
-router.delete('/:id',  nightCtrl.deleteNight);
+router.put('/:id', validateId,upload.none(), nightCtrl.updateNight);
+router.delete('/:id', validateId, nightCtrl.deleteNight);
 
 module.exports = router;

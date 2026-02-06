@@ -54,6 +54,7 @@ exports.getAll = async (req, res, next) => {
     }else{
       sortBy[sort[0]]=1
     }
+
 const governorates = await Governorate.aggregate([
   {
     $match: {
@@ -93,6 +94,7 @@ const governorates = await Governorate.aggregate([
 
 exports.getOne = async (req, res, next) => {
   try {
+
     const g = await Governorate.findById(req.params.id).lean();
     if (!g) return res.status(404).json({ message: "Not found" });
 
