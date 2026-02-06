@@ -25,7 +25,7 @@ router.get('/:id', govCtrl.getOne);
 
 router.post('/',upload.single('img'), [
   check('name', 'name field required').notEmpty(),
-  check('img', 'img field required').notEmpty()
+//   check('img', 'img field required').notEmpty()
 ], govCtrl.createGov);
 
 router.put('/:id',upload.single('img'), govCtrl.updateGov);

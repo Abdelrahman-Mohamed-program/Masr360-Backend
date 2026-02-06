@@ -50,15 +50,40 @@ exports.getAll = async (req, res, next) => {
     let sortBy = {}
 
     if (sort.length>1) {
-      sortBy[sort[0]]=sort[1];
+      sortBy[sort[0]]=sort[1]==="desc"?-1:1;
     }else{
-      sortBy[sort[0]]="asc"
+      sortBy[sort[0]]=1
     }
-    
-    const governorates = await Governorate.find({
-      name:{$regex:search,$options:"i"},
+const governorates = await Governorate.aggregate([
+  {
+    $match: {
+      name: { $regex: search, $options: "i" },
       lang
-    }).sort(sortBy);
+    }
+  },
+  {
+    $lookup: {
+      from: "places", // collection name (IMPORTANT: lowercase plural usually)
+      localField: "_id",
+      foreignField: "governorate",
+      as: "places"
+    }
+  },
+  {
+    $addFields: {
+      placesCount: { $size: "$places" }
+    }
+  },
+  {
+    $project: {
+      places: 0 // remove places array if you only want count
+    }
+  },
+  {
+    $sort: sortBy
+  }
+]);
+
     res.json(governorates);
   } catch (err) {
     console.error(err);

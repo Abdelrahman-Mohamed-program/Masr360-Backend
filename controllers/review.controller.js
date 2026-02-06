@@ -11,7 +11,7 @@ const modelMap = {
   night: Night
 };
 
-const modelNameMap = { // used for refPath: must be model names
+const modelNameMap = { 
   place: 'Place',
   product: 'Product',
   night: 'Night'

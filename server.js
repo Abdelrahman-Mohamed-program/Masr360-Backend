@@ -13,6 +13,7 @@ const productRoutes = require('./routes/products');
 const nightRoutes = require('./routes/nights');
 const reviewRoutes = require('./routes/reviews');
 const categoriesRoutes = require('./routes/categories');
+const allRoutes = require("./routes/all")
 const { errorHandler } = require('./middlewares/errorHandle');
 const PORT = process.env.PORT || 5000;
 const path = require ("path")
@@ -43,7 +44,7 @@ app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/nights', nightRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/categories', categoriesRoutes);
-
+app.use('/api/v1/all',allRoutes)
 //testing route
 app.use((req, res) => res.json({
   message:"Api is running"
