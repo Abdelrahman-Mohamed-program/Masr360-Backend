@@ -8,7 +8,7 @@ exports.createGov = async (req, res, next) => {
     return res.status(400).json({ errors: errors.array() });
   try {
       let governorate = {  
-      name:req.body.name,
+      name:req.body.name[0].toUpperCase()+req.body.name.slice("1"),
       desc:req.body.desc,
       lang:req.body.lang.toUpperCase()
     }
