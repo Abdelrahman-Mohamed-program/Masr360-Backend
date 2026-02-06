@@ -10,7 +10,7 @@ exports.createGov = async (req, res, next) => {
       let governorate = {  
       name:req.body.name[0].toUpperCase()+req.body.name.slice("1"),
       desc:req.body.desc,
-      lang:req.body.lang.toUpperCase()
+      lang:req.body.lang?req.body.lang.toUpperCase():""
     }
      if (req.file) {
      const img = `/uploads/governorates/${req.file.filename}`;
