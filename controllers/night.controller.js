@@ -38,7 +38,12 @@ exports.getOne = async (req, res,next) => {
 
 exports.updateNight = async (req, res,next) => {
   try {
-    const updated = await Night.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    console.log(req.body);
+    
+    const updated = await Night.findByIdAndUpdate(req.params.id, req.body, 
+      {
+     new: true, runValidators: true
+    });
     if (!updated) return res.status(404).json({ message: 'Not found' });
     res.json(updated);
   } catch (err) { console.error(err);  next(err)}

@@ -27,7 +27,7 @@ router.post('/',upload.single('img')  ,[
   check('name', 'name required').notEmpty()
 ], nightCtrl.createNight);
 
-router.put('/:id',  nightCtrl.updateNight);
+router.put('/:id', upload.none(), nightCtrl.updateNight);
 router.delete('/:id',  nightCtrl.deleteNight);
 
 module.exports = router;
