@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 const govCtrl = require('../controllers/governorate.controller');
-const multer = require("multer")
 const { authMiddleware, adminOnly } = require('../middlewares/auth');
 const path = require("path")
+const multer = require("multer")
 //multer file upload
 const storage = multer.diskStorage({
         destination:(req,file,cb)=>{//the destination of where the file will be saved in the server
@@ -24,7 +24,8 @@ router.get('/', govCtrl.getAll);
 router.get('/:id', govCtrl.getOne);
 
 router.post('/',upload.single('img'), [
-  check('name', 'name field required').notEmpty()
+  check('name', 'name field required').notEmpty(),
+  check('img', 'img field required').notEmpty()
 ], govCtrl.createGov);
 
 router.put('/:id',upload.single('img'), govCtrl.updateGov);
