@@ -17,7 +17,7 @@ router.post('/', [
   check('rate','rate 0-5').isFloat({ min: 0, max: 5 }),
   check('type','type required').notEmpty(),
   check('targetId','type_id required').notEmpty(),
-  check('lang','lang required').notEmpty(),
+
   check('desc','desc required').notEmpty()
 ], reviewCtrl.createReview);
 
