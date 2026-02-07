@@ -1,21 +1,36 @@
 const Governorate = require("../models/Governorates");
 const { validationResult } = require("express-validator");
 const Place = require("../models/Place");
+const uploadToCloudinary = require("../utils/uploadToCloudinary");
 
 exports.createGov = async (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty())
     return res.status(400).json({ errors: errors.array() });
   try {
-      let governorate = {  
+
+    if (!req.file) {
+      return res.status(400).json({
+         "errors": [
+        {
+            "type": "field",
+            "msg": "img field required",
+            "path": "img",
+            "location": "body"
+        }
+    ]
+      })
+    }
+
+     const result = await uploadToCloudinary(req.file.buffer);
+      let governorate = { 
+       img:result.secure_url,
       name:req.body.name[0].toUpperCase()+req.body.name.slice("1"),
       desc:req.body.desc,
       lang:req.body.lang?req.body.lang.toUpperCase():""
     }
-     if (req.file) {
-     const img = `/uploads/governorates/${req.file.filename}`;
-     governorate['img'] = img
-  }
+   
+   
 
     const gov = new Governorate(
       governorate
@@ -110,11 +125,13 @@ exports.getOne = async (req, res, next) => {
 
 exports.updateGov = async (req, res, next) => {
   try {
-  const body = {...req.body}
+   const body = {...req.body}
     if (req.file) {
-       body.img = `/uploads/governorates/${req.file.filename}`;
+     const result = await uploadToCloudinary(req.file.buffer);
+     body.img = result.secure_url;
     } 
-    
+     
+      
     const updated = await Governorate.findByIdAndUpdate(
       req.params.id,
       body,
