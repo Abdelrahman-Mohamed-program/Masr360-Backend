@@ -1,19 +1,12 @@
 const Night = require('../models/Night');
 const { validationResult } = require('express-validator');
 const mongoose = require("mongoose")
+const uploadToCloudinary = require("../utils/uploadToCloudinary")
 exports.createNight = async (req, res,next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   try {
     const body = req.body;
-
-    if (req.file) {
-      console.log("came here");
-      
-     const img = `/uploads/nights/${req.file.filename}`;
-     body['img'] = img
-  }
-  console.log(body.img);
   
     const n = new Night(req.body);
     await n.save();

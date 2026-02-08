@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const nightSchema = new mongoose.Schema({
-  imgs:{type:String},
+  imgs:{type:Array,required:true},
   desc:{type:String,required:true},
   name: { type: String, required: true },
   location:{
