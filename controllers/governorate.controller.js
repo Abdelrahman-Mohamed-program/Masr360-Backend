@@ -22,9 +22,15 @@ exports.createGov = async (req, res, next) => {
       })
     }
 
+    
+
      const result = await uploadToCloudinary(req.file.buffer);
+     const img = {
+      publicId:result.public_id,
+      url:result.url
+     }
       let governorate = { 
-       img:result.secure_url,
+       img,
       name:req.body.name[0].toUpperCase()+req.body.name.slice("1"),
       desc:req.body.desc,
       lang:req.body.lang?req.body.lang.toUpperCase():""
@@ -41,7 +47,7 @@ exports.createGov = async (req, res, next) => {
     if (req.body?.places) {
       let places = req.body.places;
       places = places.replace(/'/g, '"') //replacing all ' with "
-            console.log(places)
+        
       places = JSON.parse(places)
 
 
@@ -128,7 +134,10 @@ exports.updateGov = async (req, res, next) => {
    const body = {...req.body}
     if (req.file) {
      const result = await uploadToCloudinary(req.file.buffer);
-     body.img = result.secure_url;
+     body.img = {
+      publicId:result.public_id,
+      url:result.url
+     };
     } 
      
       

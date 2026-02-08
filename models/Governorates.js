@@ -1,7 +1,14 @@
 const mongoose = require('mongoose');
 
 const GovernorateSchema = new mongoose.Schema({
-  img:{type:String,required:false},
+  img:{
+    publicId:{
+      type:String,required:true
+    },
+    url:{
+      type:String,required:true
+    }
+  },
   name: { type: String, required: true },
   desc: { type: String,required: true  },
   lang:{type:String,enum:["AR","EN"],required:true}
