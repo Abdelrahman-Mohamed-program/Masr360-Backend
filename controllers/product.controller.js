@@ -142,6 +142,9 @@ if (sort) {
     ]);
 
     res.json({
+      page: Number(page),
+      limit: Number(limit),
+      count: products.length,
       products
     });
 
