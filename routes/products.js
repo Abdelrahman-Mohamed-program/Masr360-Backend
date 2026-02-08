@@ -4,12 +4,19 @@ const { check } = require('express-validator');
 const productCtrl = require('../controllers/product.controller');
 const { authMiddleware, adminOnly } = require('../middlewares/auth');
 const validateId = require('../middlewares/validateId');
+const upload = require("../middlewares/upload");
+
 
 router.get('/', productCtrl.getAll);
 router.get('/:id',validateId,productCtrl.getOne);
 
-router.post('/',  [
-  check('name', 'name required').notEmpty()
+router.post('/',  upload.single('img'),[
+  check('name', 'name required').notEmpty(),
+   check('desc', 'desc required').notEmpty(),
+      check('price', 'price required').notEmpty(),
+         check('quantity', 'quantity required').notEmpty(),
+           check('category', 'category required').notEmpty(),
+                check('lang', 'lang required').notEmpty()   
 ], productCtrl.createProduct);
 
 router.put('/:id', validateId, productCtrl.updateProduct);
