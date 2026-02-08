@@ -13,6 +13,7 @@ const productRoutes = require('./routes/products');
 const nightRoutes = require('./routes/nights');
 const reviewRoutes = require('./routes/reviews');
 const categoriesRoutes = require('./routes/categories');
+const imagesRoutes = require("./routes/images")
 const allRoutes = require("./routes/all")
 const { errorHandler } = require('./middlewares/errorHandle');
 const PORT = process.env.PORT || 5000;
@@ -44,6 +45,7 @@ app.use('/api/v1/products', productRoutes);
 app.use('/api/v1/nights', nightRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/categories', categoriesRoutes);
+app.use('/api/v1/images',imagesRoutes)
 app.use('/api/v1/all',allRoutes)
 //testing route
 app.use((req, res) => res.json({
