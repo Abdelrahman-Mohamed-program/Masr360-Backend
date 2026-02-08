@@ -20,7 +20,7 @@ router.post('/',  upload.array('imgs',5),multiapleUploads,[
                 check('lang', 'lang required').notEmpty()   
 ], productCtrl.createProduct);
 
-router.put('/:id', validateId, productCtrl.updateProduct);
+router.put('/:id', validateId, upload.array('imgs',5),multiapleUploads,productCtrl.updateProduct);
 router.delete('/:id',validateId,  productCtrl.deleteProduct);
 
 module.exports = router;

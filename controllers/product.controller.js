@@ -135,7 +135,22 @@ exports.getOne = async (req, res, next) => {
 
 exports.updateProduct = async (req, res,next) => {
   try {
-    const updated = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
+     const { imgs, ...rest } = req.body; 
+    // newImages = array of { publicId, url }
+    
+    const updated = await Product.findByIdAndUpdate(
+      req.params.id,
+      {
+        ...rest,
+        // atomic push of new images
+        ...(imgs && imgs.length > 0 ? { $push: { imgs: { $each: imgs } } } : {})
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
     if (!updated) return res.status(404).json({ message: 'Not found' });
     res.json(updated.toObject());
   } catch (err) { console.error(err);  next(err)}

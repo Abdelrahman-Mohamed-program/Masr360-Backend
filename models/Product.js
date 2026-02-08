@@ -8,6 +8,9 @@ const productSchema = new mongoose.Schema({
     type:Object,required:false
   },
   name: { type: String, required: true },
+  desc:{
+    type:String,required:true
+  },
   price: { type: Number, default: 0 ,required: true },
   discount: { type: Number, default: 0,min:0,max:100,required: false  },
   quantity:
