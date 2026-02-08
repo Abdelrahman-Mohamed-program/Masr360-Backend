@@ -11,7 +11,7 @@ const nightSchema = new mongoose.Schema({
   lang:{type:String,required:true,enum:["AR","EN"]},
   locationIframe: { type: String ,required: true },
   category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' ,required:true},
-  governorate:{ type: mongoose.Schema.Types.ObjectId, ref: 'Category',required:true  },
+  governorate:{ type: mongoose.Schema.Types.ObjectId, ref: 'Governorate',required:true  },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Night', nightSchema);
