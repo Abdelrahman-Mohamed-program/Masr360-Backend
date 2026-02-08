@@ -33,22 +33,6 @@ exports.getOne = async (req, res, next) => {
         }
       },
 
-      // 🔥 Populate category
-      {
-        $lookup: {
-          from: "categories",
-          localField: "category",
-          foreignField: "_id",
-          as: "category"
-        }
-      },
-      {
-        $unwind: {
-          path: "$category",
-          preserveNullAndEmptyArrays: true
-        }
-      },
-
       // 🔥 Get reviews for this product only
       {
         $lookup: {
