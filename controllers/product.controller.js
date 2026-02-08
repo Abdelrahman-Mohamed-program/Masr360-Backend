@@ -1,29 +1,11 @@
 const Product = require('../models/Product');
 const { validationResult } = require('express-validator');
-const uploadToCloudinary = require("../utils/uploadToCloudinary")
+
+
 exports.createProduct = async (req, res,next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   try {
-    const body = req.body;
-     if (!req.file) {
-      return res.status(400).json({
-         "errors": [
-        {
-            "type": "field",
-            "msg": "img field required",
-            "path": "img",
-            "location": "body"
-        }
-    ]
-      })
-    }
-
-    const result =await uploadToCloudinary(req.file.buffer)
-     body.img= {
-      publicId:result.public_id,
-      url:result.url
-    }
     const p = new Product(req.body);
     await p.save();
     res.status(201).json(p);

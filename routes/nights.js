@@ -26,7 +26,7 @@ router.post('/',upload.array('imgs',5),multiUploads ,[
   check('name', 'name required').notEmpty()
 ], nightCtrl.createNight);
 
-router.put('/:id', validateId,upload.array('imgs',4),multiUploads , nightCtrl.updateNight);
+router.put('/:id', validateId,upload.array('imgs',5),multiUploads , nightCtrl.updateNight);
 router.delete('/:id', validateId, nightCtrl.deleteNight);
 
 module.exports = router;

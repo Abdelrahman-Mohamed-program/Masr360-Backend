@@ -1,13 +1,8 @@
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
-   img:{
-    publicId:{
-      type:String,required:true
-    },
-    url:{
-      type:String,required:true
-    }
+   imgs:{
+   type:Array,required:true
   },
   tags:{
     type:Object,required:false
