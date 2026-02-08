@@ -48,7 +48,8 @@ exports.getAll = async (req, res, next) => {
         $addFields: {
           avgRating: {
             $ifNull: [{ $avg: "$reviews.rate" }, 0]
-          }
+          },
+          reviewsCount: { $size: "$reviews" }
         }
       },
       {

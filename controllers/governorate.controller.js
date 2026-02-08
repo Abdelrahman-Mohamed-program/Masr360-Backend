@@ -85,7 +85,7 @@ const governorates = await Governorate.aggregate([
   },
   {
     $lookup: {
-      from: "places", // collection name (IMPORTANT: lowercase plural usually)
+      from: "places", 
       localField: "_id",
       foreignField: "governorate",
       as: "places"
