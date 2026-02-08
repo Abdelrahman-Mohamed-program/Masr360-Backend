@@ -16,13 +16,140 @@ exports.createProduct = async (req, res,next) => {
   }
 };
 
-exports.getAll = async (req, res,next) => {
+exports.getAll = async (req, res, next) => {
   try {
-    const list = await Product.find().populate('reviews');
-    res.json(list);
-  } catch (err) { console.error(err);  next(err)}
-};
+    const {
+      page = 1,
+      limit = 10,
+      search,
+      minPrice,
+      maxPrice,
+      stock,
+      category,
+      sort
+    } = req.query;
 
+    const matchStage = {};
+
+    // 🔎 Search (name or title)
+    if (search) {
+      matchStage.name = { $regex: search, $options: "i" };
+    }
+
+    // 💰 Price range
+    if (minPrice || maxPrice) {
+      matchStage.price = {};
+      if (minPrice) matchStage.price.$gte = Number(minPrice);
+      if (maxPrice) matchStage.price.$lte = Number(maxPrice);
+    }
+
+    // 📦 Stock filter
+    if (stock === "in") {
+      matchStage.quantity = { $gt: 0 };
+    }
+    if (stock === "out") {
+      matchStage.quantity = 0;
+    }
+
+    // 🗂 Category filter
+    if (category && mongoose.Types.ObjectId.isValid(category)) {
+      matchStage.category = new mongoose.Types.ObjectId(category);
+    }
+
+    // 🔃 Sorting
+let sortStage = { createdAt: -1 }; // default
+
+if (sort) {
+  const [field, order] = sort.split(",");
+
+  const allowedFields = ["price", "avgRating", "createdAt", "priceAfterDiscount"];
+
+  if (allowedFields.includes(field)) {
+    sortStage = {
+      [field]: order === "asc" ? 1 : -1
+    };
+  }
+}
+
+    const products = await Product.aggregate([
+      // 🔥 Apply filters
+      { $match: matchStage },
+
+      // 🔥 Join reviews
+      {
+        $lookup: {
+          from: "reviews",
+          let: { productId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$targetId", "$$productId"] },
+                    { $eq: ["$type", "product"] }
+                  ]
+                }
+              }
+            },
+            {
+              $project: { rate: 1 }
+            }
+          ],
+          as: "reviews"
+        }
+      },
+
+      // ⭐ Ratings
+      {
+        $addFields: {
+          avgRating: {
+            $ifNull: [{ $avg: "$reviews.rate" }, 0]
+          },
+          reviewsCount: { $size: "$reviews" }
+        }
+      },
+
+      // 💸 Price after discount
+      {
+        $addFields: {
+          priceAfterDiscount: {
+            $subtract: [
+              "$price",
+              {
+                $multiply: [
+                  "$price",
+                  { $divide: ["$discount", 100] }
+                ]
+              }
+            ]
+          }
+        }
+      },
+
+      // 🧹 Remove reviews array (optional, saves bandwidth)
+      {
+        $project: {
+          reviews: 0
+        }
+      },
+
+      // 🔃 Sorting
+      { $sort: sortStage },
+
+      // 📄 Pagination
+      { $skip: (Number(page) - 1) * Number(limit) },
+      { $limit: Number(limit) }
+    ]);
+
+    res.json({
+      products
+    });
+
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
 
 exports.getOne = async (req, res, next) => {
   try {
