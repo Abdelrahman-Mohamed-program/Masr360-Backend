@@ -24,38 +24,71 @@ exports.createNight = async (req, res,next) => {
 exports.getAll = async (req, res, next) => {
   try {
 
-    const list = await Night.aggregate([
-      {
-        $lookup: {
-          from: "reviews",
-          let: { nightId: "$_id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$targetId", "$$nightId"] },
-                    { $eq: ["$type", "night"] }
-                  ]
-                }
-              }
+   const list = await Night.aggregate([
+  
+  {
+    $lookup: {
+      from: "governorates",
+      localField: "governorate",
+      foreignField: "_id",
+      as: "governorate"
+    }
+  },
+
+  
+  {
+    $unwind: {
+      path: "$governorate",
+      preserveNullAndEmptyArrays: true
+    }
+  },
+
+
+  {
+    $lookup: {
+      from: "reviews",
+      let: { nightId: "$_id" },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $and: [
+                { $eq: ["$targetId", "$$nightId"] },
+                { $eq: ["$type", "night"] }
+              ]
             }
-          ],
-          as: "reviews"
+          }
         }
+      ],
+      as: "reviews"
+    }
+  },
+
+ 
+  {
+    $addFields: {
+      avgRating: {
+        $ifNull: [{ $avg: "$reviews.rate" }, 0]
       },
-      {
-        $addFields: {
-          avgRating: {
-            $ifNull: [{ $avg: "$reviews.rate" }, 0]
-          },
-          reviewsCount: { $size: "$reviews" }
-        }
-      },
-      {
-        $project: { reviews: 0 }
-      }
-    ]);
+      reviewsCount: { $size: "$reviews" }
+    }
+  },
+
+ 
+  {
+    $addFields: {
+      governorateName: "$governorate.name"
+    }
+  },
+
+  
+  {
+    $project: {
+      reviews: 0,
+      governorate: 0
+    }
+  }
+]);
 
     res.json(list);
 
@@ -67,40 +100,69 @@ exports.getAll = async (req, res, next) => {
 exports.getOne = async (req, res, next) => {
   try {
 
-   const night = await Night.aggregate([
-      {
-        $match: {
-          _id: new mongoose.Types.ObjectId(req.params.id)
-        }
-      },
-      {
-        $lookup: {
-          from: "reviews",
-          let: { nightId: "$_id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$targetId", "$$nightId"] },
-                    { $eq: ["$type", "night"] }
-                  ]
-                }
-              }
+  const night = await Night.aggregate([
+  {
+    $match: {
+      _id: new mongoose.Types.ObjectId(req.params.id)
+    }
+  },
+  {
+    $lookup: {
+      from: "reviews",
+      let: { nightId: "$_id" },
+      pipeline: [
+        {
+          $match: {
+            $expr: {
+              $and: [
+                { $eq: ["$targetId", "$$nightId"] },
+                { $eq: ["$type", "night"] }
+              ]
             }
-          ],
-          as: "reviews"
+          }
+        },
+
+        // ✅ Populate user
+        {
+          $lookup: {
+            from: "users",
+            localField: "user",
+            foreignField: "_id",
+            as: "user"
+          }
+        },
+
+        // Convert user array → object
+        {
+          $unwind: {
+            path: "$user",
+            preserveNullAndEmptyArrays: true
+          }
+        },
+
+        // Optional: select only username
+        {
+          $project: {
+            rate: 1,
+            title: 1,
+            comment: 1,
+            "user._id": 1,
+            "user.username": 1
+          }
         }
+      ],
+      as: "reviews"
+    }
+  },
+  {
+    $addFields: {
+      avgRating: {
+        $ifNull: [{ $avg: "$reviews.rate" }, 0]
       },
-      {
-        $addFields: {
-          avgRating: {
-            $ifNull: [{ $avg: "$reviews.rate" }, 0]
-          },
-          reviewsCount: { $size: "$reviews" }
-        }
-      }
-    ]);
+      reviewsCount: { $size: "$reviews" }
+    }
+  }
+]);
 
     if (!night.length)
       return res.status(404).json({ message: "Not found" });
