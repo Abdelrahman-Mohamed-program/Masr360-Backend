@@ -177,7 +177,7 @@ const updated = await Night.findByIdAndUpdate(
   {
     ...rest,
     // atomic push of new images
-    ...(newImages && newImages.length > 0 ? { $push: { imgs: { $each: imgs } } } : {})
+    ...(imgs && imgs.length > 0 ? { $push: { imgs: { $each: imgs } } } : {})
   },
   {
     new: true,
