@@ -26,6 +26,13 @@ if (entityType === "night") {
   Model = Product;
 } else if (entityType === "specialEvent") {
   Model = SpecialEvent;
+} else if(entityType === "governorate"){
+    const result = await cloudinary.uploader.destroy(id);
+     if (result.result === 'not found') {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+
+  return  res.json({ message: 'Deleted successfully', result });
 } else {
   return res.status(400).json({ message: "Invalid entity type" });
 }
