@@ -41,7 +41,7 @@ const otpTemplate = (otp, message) => {
             <!-- Expiry info -->
             <tr>
               <td style="color:#0B0B0B;font-size:14px;line-height:1.5;">
-                This code expires in 10 minutes
+                This code expires in 20 minutes
               </td>
             </tr>
 

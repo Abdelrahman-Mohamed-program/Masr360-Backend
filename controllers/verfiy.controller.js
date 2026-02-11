@@ -21,9 +21,7 @@ const sendOtp = async (req,res,next)=>{
 
       await UserOtpVerification.deleteMany({
         userId
-      });
-      console.log("s`df");
-      
+      }); 
        const otp = generateOTP();
        const message = "Use this code to verify your email";
        const template = otpTemplate(otp,message)
@@ -36,7 +34,7 @@ const sendOtp = async (req,res,next)=>{
             userId,
             otp:hashedOtp,
             createdAt:Date.now(),
-            expiresAt:Date.now()+3600000
+            expiresAt:Date.now()+(20 * 60 * 1000)
         })
         await obj.save()
         await  sendEmail(email,template);
