@@ -1,5 +1,5 @@
  const transporter = require("../config/nodemailer");
-const sendEmail = async (email,template)=>{
+const sendEmail = async (email,template,subject)=>{
 
     
 try {
@@ -9,6 +9,8 @@ try {
         subject:"Verfiy your email",
         html:template
     } 
+
+    
 
      await  transporter.sendMail(mailOptions);
 

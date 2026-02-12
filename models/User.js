@@ -5,7 +5,10 @@ const userSchema = new mongoose.Schema({
   phoneNumber: { type: String,required: true },
   location: { type: String,required: true },
   ip: { type: String },
-  verfied:{
+  isVerified:{
+    type:Boolean,default:false
+  },
+   isBanned:{
     type:Boolean,default:false
   },
   password: { type: String, required: true },

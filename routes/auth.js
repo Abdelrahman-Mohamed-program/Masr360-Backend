@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
 const authController = require('../controllers/auth.controller');
-const {sendOtp} = require("../controllers/verfiy.controller")
+const {sendOtp, validateOtp} = require("../controllers/verfiy.controller")
 // register
 router.post('/register', [
   check('username', 'username is required').notEmpty(),
@@ -16,8 +16,9 @@ router.post('/register', [
 router.post('/verify',sendOtp)
 // login
 router.post('/login', [
-  check('username', 'username is required').notEmpty(),
+  check('email', 'email is required').notEmpty(),
   check('password', 'password required').notEmpty()
 ], authController.login);
 
+router.post('/validateOtp',validateOtp);
 module.exports = router;
