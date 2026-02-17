@@ -10,7 +10,7 @@ const jwt = require("jsonwebtoken")
 const validateOtp = async (req, res, next) => {
   try {
     const { _id, otp } = req.body;
-
+ 
     // 1️⃣ Validate input
     if (!_id || !otp) {
       return res.status(400).json({

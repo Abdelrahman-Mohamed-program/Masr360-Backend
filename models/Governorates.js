@@ -11,7 +11,11 @@ const GovernorateSchema = new mongoose.Schema({
   },
   name: { type: String, required: true },
   desc: { type: String,required: true  },
-  lang:{type:String,enum:["AR","EN"],required:true}
+  // lang:{type:String,enum:["AR","EN"],required:true},
+  translations : {
+    type:Object,
+    required:true
+  }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Governorate', GovernorateSchema);

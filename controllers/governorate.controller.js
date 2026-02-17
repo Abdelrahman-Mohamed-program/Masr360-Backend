@@ -21,6 +21,7 @@ exports.createGov = async (req, res, next) => {
     ]
       })
     }
+     req.body.translations = JSON.parse(req.body.translations);
 
     
 
@@ -33,7 +34,7 @@ exports.createGov = async (req, res, next) => {
        img,
       name:req.body.name[0].toUpperCase()+req.body.name.slice("1"),
       desc:req.body.desc,
-      lang:req.body.lang?req.body.lang.toUpperCase():""
+      translations: req.body.translations
     }
    
    
@@ -76,16 +77,19 @@ exports.getAll = async (req, res, next) => {
       sortBy[sort[0]]=1
     }
 
+
 const governorates = await Governorate.aggregate([
   {
     $match: {
       name: { $regex: search, $options: "i" },
-      lang
+      ...(lang !== "EN" && {
+        [`translations.${lang}`]: { $exists: true }
+      })
     }
   },
   {
     $lookup: {
-      from: "places", 
+      from: "places",
       localField: "_id",
       foreignField: "governorate",
       as: "places"
@@ -98,7 +102,7 @@ const governorates = await Governorate.aggregate([
   },
   {
     $project: {
-      places: 0 // remove places array if you only want count
+      places: 0
     }
   },
   {

@@ -22,7 +22,10 @@ router.post('/',
 upload.single('img'), 
 [
   check('name', 'name field required').notEmpty(),
-
+ check('desc', 'description field required').notEmpty(),
+  check('desc', 'description field required').notEmpty(),
+  check('translations', 'translations Object is required required').notEmpty(),
+   ,
 ],govCtrl.createGov);
 
 router.put('/:id',validateId,upload.single('img'), govCtrl.updateGov);
