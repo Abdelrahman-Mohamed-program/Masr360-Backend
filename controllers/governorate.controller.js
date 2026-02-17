@@ -135,6 +135,9 @@ exports.getOne = async (req, res, next) => {
 
 exports.updateGov = async (req, res, next) => {
   try {
+   req.body.translations = JSON.parse(req.body.translations);
+   console.log(req.body.translations);
+   
    const body = {...req.body}
     if (req.file) {
      const result = await uploadToCloudinary(req.file.buffer);
@@ -143,7 +146,7 @@ exports.updateGov = async (req, res, next) => {
       url:result.url
      };
     } 
-     
+   
       
     const updated = await Governorate.findByIdAndUpdate(
       req.params.id,
