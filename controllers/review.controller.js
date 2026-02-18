@@ -109,10 +109,30 @@ exports.updateOne = async (req, res) => {
      
     }
 
-    const r = await Review.findByIdAndUpdate(req.params.id,req.body,{new:true,runValidators:true})
-    if (!r) return res.status(404).json({ message: 'Not found' });
+const review = await Review.findById(req.params.id);
+
+if (!review) {
+  return res.status(404).json({ message: 'Review not found' });
+}
+
+
+if (
+  req.user.role !== 'admin' &&
+  String(review.user) !== String(req.user._id)
+) {
+  return res.status(403).json({ message: 'Not authorized to update' });
+}
+
+const updatedReview = await Review.findByIdAndUpdate(
+  req.params.id,
+  {
+    ...req.body,
+    type
+  },
+  { new: true, runValidators: true }
+);
     res.json({
-      r,
+      updatedReview,
       message:"updated"
     });
   } catch (err) { console.error(err); res.status(500).send('Server error'); }
