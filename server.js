@@ -20,6 +20,7 @@ const { errorHandler } = require('./middlewares/errorHandle');
 const PORT = process.env.PORT || 5000;
 const path = require ("path");
 const connectDB = require('./config/dbConnection');
+const favouriteRoutes = require('./routes/favourites');
 
 const app = express();
 connectDB();
@@ -59,7 +60,8 @@ app.use('/api/v1/nights', nightRoutes);
 app.use('/api/v1/reviews', reviewRoutes);
 app.use('/api/v1/categories', categoriesRoutes);
 app.use('/api/v1/images',imagesRoutes)
-app.use('/api/v1/all',allRoutes)
+app.use('/api/v1/all',allRoutes);
+app.use('/api/v1/favourites',favouriteRoutes)
 //testing route
 app.use((req, res) => res.json({
   message:"Api is running"
