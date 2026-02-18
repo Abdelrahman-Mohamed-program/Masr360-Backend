@@ -21,4 +21,5 @@ router.post('/login', [
 ], authController.login);
 
 router.post('/validateOtp',validateOtp);
+router.post('/refresh',validateOtp);
 module.exports = router;
