@@ -13,6 +13,7 @@ router.post('/register', [
   check('location','location is required').notEmpty(),
   check('verfied', 'Cannot set verfication right now').isEmpty()
 ], authController.register);
+
 router.post('/verify',sendOtp)
 // login
 router.post('/login', [
@@ -21,5 +22,5 @@ router.post('/login', [
 ], authController.login);
 
 router.post('/validateOtp',validateOtp);
-router.post('/refresh',validateOtp);
+router.post('/refresh',authController.refresh);
 module.exports = router;

@@ -59,7 +59,7 @@ exports.login = async (req, res,next) => {
   }
 };
 
-const refresh = async(req,res,next)=>{
+exports.refresh = async(req,res,next)=>{
   try {
       if(!req.cookies?.jwt){
    return res.status(401).json({
@@ -81,4 +81,3 @@ const refresh = async(req,res,next)=>{
 
 }
 
-module.exports = refresh
