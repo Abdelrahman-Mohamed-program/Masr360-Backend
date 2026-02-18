@@ -43,10 +43,42 @@ exports.login = async (req, res,next) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ message: 'Invalid credentials' });
 
-    const token = jwt.sign({ id: user._id,role:user.role }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
-    res.status(200).json({ token, user: { id: user._id,email:user.email, username: user.username} });
+    const accessToken = jwt.sign({ id: user._id,role:user.role }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+    const refreshToken = jwt.sign({ id: user._id,role:user.role }, process.env.JWT_REFRESH_TOKEN_SECRET, { expiresIn: "15d" });
+    res.cookie('jwt', refreshToken, {
+            httpOnly: true,
+            secure: true,
+           sameSite: 'None',
+            maxAge: 15 * 24 * 60 * 60 * 1000,
+            path: '/auth/refresh'
+        });
+    res.status(200).json({ accessToken, user: { id: user._id,email:user.email, username: user.username} });
   } catch (err) {
     console.error(err);
     next(err)
   }
 };
+
+const refresh = async(req,res,next)=>{
+  try {
+      if(!req.cookies?.jwt){
+   return res.status(401).json({
+      message:"Unauthorized"
+    })
+  }
+   const refreshToken = req.cookies.jwt;
+   const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET);
+    const accessToken = jwt.sign({ id: decoded.id,role:decoded.role }, process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN });
+    res.status(200).json({
+      accessToken
+    })
+  } catch (error) {
+    console.log(error);
+   return res.status(401).json({
+      message:"Unauthorized"
+    })
+  }
+
+}
+
+module.exports = refresh

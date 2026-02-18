@@ -10,11 +10,11 @@ exports.authMiddleware = async (req, res, next) => {
     // console.log("came");
     
     req.user = await User.findById(decoded.id).select('-password');
-    if (!req.user) return res.status(401).json({ message: 'User not found' });
+    if (!req.user) return res.status(401).json({ message: 'Unauthorized' });
     next();
   } catch (err) {
     console.error(err);
-    res.status(401).json({ message: 'Token is not valid' });
+    res.status(401).json({ message: 'Unauthorized' });
   }
 };
 
