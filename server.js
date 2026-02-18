@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 //dependancies
+const cookieParser = require('cookie-parser');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const govRoutes = require('./routes/Governorates');
@@ -22,6 +23,7 @@ const connectDB = require('./config/dbConnection');
 
 const app = express();
 connectDB();
+app.use(cookieParser());
 app.use(express.json());
 app.use(cors({
   origin: '*',           
