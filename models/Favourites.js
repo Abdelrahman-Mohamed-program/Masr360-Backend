@@ -13,6 +13,6 @@ targetId: {
     required: true,
     refPath:'type'
 }
+},{ timestamps: true })
 
-
-})
+module.exports = mongoose.model('Favourite', Favourite);
