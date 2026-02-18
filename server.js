@@ -17,10 +17,11 @@ const imagesRoutes = require("./routes/images")
 const allRoutes = require("./routes/all")
 const { errorHandler } = require('./middlewares/errorHandle');
 const PORT = process.env.PORT || 5000;
-const path = require ("path")
+const path = require ("path");
+const connectDB = require('./config/dbConnection');
 //middlewares and routes
 const app = express();
-
+connectDB();
 app.use(express.json());
 app.use(cors({
   origin: '*',            // allow all origins
@@ -54,14 +55,6 @@ app.use((req, res) => res.json({
 
 
 app.use(errorHandler)
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log('MongoDB connected');
-  })
-  .catch(err => {
-    console.error('DB connection error', err);
-  });
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
