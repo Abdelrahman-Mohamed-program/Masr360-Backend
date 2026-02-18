@@ -19,19 +19,29 @@ const { errorHandler } = require('./middlewares/errorHandle');
 const PORT = process.env.PORT || 5000;
 const path = require ("path");
 const connectDB = require('./config/dbConnection');
-//middlewares and routes
+
 const app = express();
 connectDB();
 app.use(express.json());
 app.use(cors({
-  origin: '*',            // allow all origins
-  methods: ['GET','POST','PUT','DELETE','PATCH','OPTIONS'], // allow all methods
-  allowedHeaders: ['Content-Type', 'Authorization'] // allow common headers
+  origin: '*',           
+  methods: ['GET','POST','PUT','DELETE','PATCH','OPTIONS'], 
+  allowedHeaders: ['Content-Type', 'Authorization'] 
 }));
 
 
 
+mongoose.connection.on('disconnected', () => {
+  console.warn('MongoDB disconnected! Attempting reconnect...');
+});
 
+mongoose.connection.on('reconnected', () => {
+  console.log('MongoDB reconnected!');
+});
+
+mongoose.connection.on('error', err => {
+  console.error('MongoDB error:', err);
+});
 
 app.use(
   "/uploads",
