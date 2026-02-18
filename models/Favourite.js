@@ -4,13 +4,14 @@ user : {
     type: mongoose.Schema.Types.ObjectId, ref: 'User',
     required: true,
 },
+type:{
+    type:String,
+    enum:["Place","Night","Product"]
+},
 targetId: {
      type: mongoose.Schema.Types.ObjectId, 
     required: true,
-},
-type:{
-    type:String,
-    enum:["place","night","product"]
+    refPath:'type'
 }
 
 

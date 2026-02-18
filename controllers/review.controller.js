@@ -18,7 +18,7 @@ exports.createReview = async (req, res) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   try {
-    const { username, rate, title, desc, targetId,type } = req.body;
+    let { username, rate, title, desc, targetId,type } = req.body;
     type = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
     if (!modelMap[type]) return res.status(400).json({ message: 'Invalid review type' });
 
