@@ -5,7 +5,7 @@ const reviewSchema = new mongoose.Schema({
   rate: { type: Number, min: 0, max: 5, required: true },
   title: { type: String,required:true },
   desc: { type: String,required:true },
-  type: { type: String, enum: ['place','product','night'], required: true },
+  type: { type: String, enum: ['Place','Product','Night'], required: true },
   targetId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,

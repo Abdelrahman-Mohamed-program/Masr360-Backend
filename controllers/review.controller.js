@@ -6,25 +6,21 @@ const { validationResult } = require('express-validator');
 const mongoose = require('mongoose');
 
 const modelMap = {
-  place: Place,
-  product: Product,
-  night: Night
+  Place: Place,
+  Product: Product,
+  Night: Night
 };
 
-const modelNameMap = { 
-  place: 'Place',
-  product: 'Product',
-  night: 'Night'
-};
+
 
 exports.createReview = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   try {
-    const { username, rate, title, desc, type, targetId } = req.body;
-    const lowerType = String(type).toLowerCase();
-    if (!modelMap[lowerType]) return res.status(400).json({ message: 'Invalid review type' });
+    const { username, rate, title, desc, targetId,type } = req.body;
+    type = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
+    if (!modelMap[type]) return res.status(400).json({ message: 'Invalid review type' });
 
     if (!mongoose.Types.ObjectId.isValid(targetId)) return res.status(400).json({ message: 'Invalid target id' });
     const target = await modelMap[lowerType].findById(targetId);
@@ -37,14 +33,10 @@ exports.createReview = async (req, res) => {
       desc,
       type: lowerType,
       targetId,
-      user: req.user ? req.user._id : undefined
+      user: req.user 
     });
     await review.save();
 
-    // push to target reviews
-    target.reviews = target.reviews || [];
-    target.reviews.push(review._id);
-    await target.save();
 
     res.status(201).json(review);
   } catch (err) {
@@ -96,17 +88,19 @@ exports.getOne = async (req, res) => {
     res.json(r.toObject());
   } catch (err) { console.error(err); res.status(500).send('Server error'); }
 };
+
 exports.updateOne = async (req, res) => {
   try {
 
     let {targetId,user,type} = req.body;
+    
     if (user) {
     return res.status(403).json({
         message:"invalid operation"
       })
     }
     if (targetId||type) {
-     type = req.body.type?req.body.type.toLowerCase():"";
+      type = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
      if (!modelMap[type]) return res.status(400).json({ message: 'Invalid review type' });
       
       if (!mongoose.Types.ObjectId.isValid(targetId)) return res.status(400).json({ message: 'Invalid target id' });
@@ -132,7 +126,7 @@ exports.deleteReview = async (req, res) => {
     if (!r) return res.status(404).json({ message: 'Not found' });
 
     // only author or admin can delete
-    if (!req.user) return res.status(401).json({ message: 'Login required' });
+
     if (req.user.role !== 'admin' && String(r.user._id) !== String(req.user._id)) {
       return res.status(403).json({ message: 'Not authorized to delete' });
     }

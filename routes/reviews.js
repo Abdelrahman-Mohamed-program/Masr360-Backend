@@ -12,7 +12,7 @@ router.get('/', reviewCtrl.getAll);
 router.get('/:id',validateId, reviewCtrl.getOne);
 
 router.put("/:id",reviewCtrl.updateOne);
-router.post('/', [
+router.post('/',[
   // check('user','user id required').notEmpty(),
   check('rate','rate 0-5').isFloat({ min: 0, max: 5 }),
   check('type','type required').notEmpty(),
