@@ -70,7 +70,9 @@ exports.getAll = async (req, res, next) => {
  
   {
     $addFields: {
-      governorateName: "$governorate.name"
+
+      governorateName: "$governorate.name",
+      governorateId: "$governorate._id"
     }
   },
 
