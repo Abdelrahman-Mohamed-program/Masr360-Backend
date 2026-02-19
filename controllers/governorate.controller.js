@@ -80,6 +80,8 @@ exports.getAll = async (req, res, next) => {
     }
 
 
+
+    
 const governorates = await Governorate.aggregate([
   {
     $match: {
@@ -108,9 +110,16 @@ const governorates = await Governorate.aggregate([
     }
   },
   {
-    $sort: sortBy,
-    $skip:page*limit,
-    $limit:limit
+   $facet: {
+    data: [
+      { $sort: sortBy },
+      { $skip: page*limit },
+      { $limit: limit }
+    ],
+    totalCount: [
+      { $count: "count" }
+    ]
+  }
   }
 
 ]);
