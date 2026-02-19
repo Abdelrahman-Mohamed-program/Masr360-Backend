@@ -16,7 +16,11 @@ exports.createNight = async (req, res,next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-
+   const page = req.query.page?Number(req.query.page)-1:0;
+   const limit = req.query.limit?Number(req.query.limit):5;
+   const search = req.query.search||"";
+   const sort = req.query.sort||"avgRating"
+   let filter ={}
    const list = await Night.aggregate([
   
   {
