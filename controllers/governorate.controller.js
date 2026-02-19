@@ -47,7 +47,7 @@ exports.createGov = async (req, res, next) => {
     
     if (req.body?.places) {
       let places = req.body.places;
-      places = places.replace(/'/g, '"') //replacing all ' with "
+      places = places.replace(/'/g, '"') 
         
       places = JSON.parse(places)
 
