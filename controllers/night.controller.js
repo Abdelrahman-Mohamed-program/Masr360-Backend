@@ -18,11 +18,39 @@ exports.getAll = async (req, res, next) => {
   try {
    const page = req.query.page?Number(req.query.page)-1:0;
    const limit = req.query.limit?Number(req.query.limit):5;
+   const governorate =  req.query.governorateId?req.query.governorateId:"";
+   const category = req.query.categoryId?req.query.categoryId:"";
    const search = req.query.search||"";
-   const sort = req.query.sort||"avgRating"
-   let filter ={}
+   const sort = req.query.sort.split(",")||["avgRating"];
+   
+
+      let filter ={}
+      if (category) {
+        filter['category']=new mongoose.Types.ObjectId(category);
+      }
+      if (governorate) {
+        filter['governorate'] = new mongoose.Types.ObjectId(governorate);
+      }
+      let sortBy  = {}
+      if (sort.length > 1) {
+        sortBy[sort[0]] = sort[1]==="desc"?-1:1;
+      }else{
+         sortBy[sort[0]] = 1;
+      }
+    
+
+      console.log(sortBy);
+      
+      
    const list = await Night.aggregate([
-  
+  {
+    $match:{
+      name:{
+       $regex: search, $options: "i" 
+      },
+      ...filter
+    }
+  },
   {
     $lookup: {
       from: "governorates",
@@ -70,10 +98,22 @@ exports.getAll = async (req, res, next) => {
       reviewsCount: { $size: "$reviews" }
     }
   },
-
- 
-  
-  
+{
+  $sort:sortBy
+}
+ ,
+  {
+   $facet: {
+    data: [
+      { $skip: page*limit },
+      { $limit: limit }
+    ],
+    totalCount: [
+      { $count: "count" }
+    ]
+  }
+  }
+  ,
   {
     $project: {
       reviews: 0
@@ -88,6 +128,10 @@ exports.getAll = async (req, res, next) => {
     next(err);
   }
 };
+
+
+
+
 exports.getOne = async (req, res, next) => {
   try {
 
