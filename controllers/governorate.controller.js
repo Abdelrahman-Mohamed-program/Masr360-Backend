@@ -70,7 +70,7 @@ exports.getAll = async (req, res, next) => {
     const sort = req.query.sort? req.query.sort.split(","):["name"];
     const lang = req.query.lang?req.query.lang.toUpperCase():"EN"
     const page = req.query.page?Number(req.query.page)-1:0;
-    const limit = req.query.limit?Number(req.query.limit):0;
+    const limit = req.query.limit?Number(req.query.limit):5;
     let sortBy = {}
 
     if (sort.length>1) {
