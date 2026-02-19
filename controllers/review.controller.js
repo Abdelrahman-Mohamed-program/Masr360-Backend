@@ -18,7 +18,7 @@ exports.createReview = async (req, res) => {
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
   try {
-    let { username, rate, title, desc, targetId,type } = req.body;
+    let {  rate, title, desc, targetId,type } = req.body;
     type = type.charAt(0).toUpperCase() + type.slice(1).toLowerCase();
     if (!modelMap[type]) return res.status(400).json({ message: 'Invalid review type' });
 
@@ -27,7 +27,6 @@ exports.createReview = async (req, res) => {
     if (!target) return res.status(404).json({ message: 'Target not found' });
 
     const review = new Review({
-      username,
       rate,
       title,
       desc,
@@ -120,7 +119,7 @@ if (
   req.user.role !== 'admin' &&
   String(review.user) !== String(req.user._id)
 ) {
-  return res.status(403).json({ message: 'Not authorized to update' });
+  return res.status(403).json({ message: 'Forbidden' });
 }
 
 const updatedReview = await Review.findByIdAndUpdate(
@@ -148,7 +147,7 @@ exports.deleteReview = async (req, res) => {
     // only author or admin can delete
 
     if (req.user.role !== 'admin' && String(r.user._id) !== String(req.user._id)) {
-      return res.status(403).json({ message: 'Not authorized to delete' });
+      return res.status(403).json({ message: 'Forbidden' });
     }
 
    await  r.deleteOne();

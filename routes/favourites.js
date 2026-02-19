@@ -7,7 +7,9 @@ const { body } = require("express-validator");
 const { isValidObjectId } = require("mongoose");
 const Place = require("../models/Place")
 const Night = require("../models/Night");
-const { addOne } = require("../controllers/favourite.controller");
+const { addOne,deleteOne,getAll,getOne } = require("../controllers/favourite.controller");
+
+
 const obj  = {
     Product:Product,
     Place:Place,
@@ -40,6 +42,9 @@ router.post("/",authMiddleware,
 ,addOne);
 
 
+router.delete("/:id",authMiddleware,validation,validateId,deleteOne);
+router.get("/",authMiddleware,validation,getAll);
+router.get("/:id",authMiddleware,getOne);
 
 
 module.exports = router;
