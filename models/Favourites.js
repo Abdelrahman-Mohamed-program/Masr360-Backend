@@ -15,4 +15,9 @@ targetId: {
 }
 },{ timestamps: true })
 
+Favourite.index(
+  { user: 1, type: 1, targetId: 1 },
+  { unique: true }
+);
+
 module.exports = mongoose.model('Favourite', Favourite);

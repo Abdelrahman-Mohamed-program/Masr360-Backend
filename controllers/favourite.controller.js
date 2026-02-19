@@ -30,15 +30,28 @@ const getAll = async(req,res,next)=>{
 
     const user = req.user;
     let favourites ;
+  let filter = {}; 
+    let type = req.query.type||"ALL";
+   
+if (type !== "ALL") {
+type = type[0].toUpperCase()+type.slice(1);
+  filter.type = type;
+}
+console.log(filter.type);
 
       if (user.role=="user") {
-            favourites = await Favourites.find({
-                user
-            }).populate("targetId")
+        filter.user = req.user._id;
+            favourites = await Favourites.find(
+                filter
+        ).populate("targetId")
         }else{
 
         }
    
+    
+
+
+ 
 
       if (!favourites) {
       return  res.status(404).json({
