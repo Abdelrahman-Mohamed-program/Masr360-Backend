@@ -86,7 +86,7 @@ const governorates = await Governorate.aggregate([
   {
     $match: {
       name: { $regex: search, $options: "i" },
-      ...(lang !== "EN" && {
+      ...(lang  && {
         [`translations.${lang}`]: { $exists: true }
       })
     }
