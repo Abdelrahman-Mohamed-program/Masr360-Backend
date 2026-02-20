@@ -35,7 +35,18 @@ body('translations','Invalid value for translations').customSanitizer(val=>{
   } catch (error) {
     throw new Error('Invalid value for translations')
   }
-})
+}) .customSanitizer((val) => {
+    if (typeof val !== 'object' || val === null) 
+      throw new Error('Invalid value for translations')
+
+    const newObj = {};
+
+    Object.keys(val).forEach((key) => {
+      newObj[key.toUpperCase()] = val[key];
+    });
+
+    return newObj;
+  })
 ,multiUploads 
 ,nightCtrl.createNight);
 
