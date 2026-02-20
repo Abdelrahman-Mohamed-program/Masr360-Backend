@@ -2,17 +2,19 @@ const Night = require('../models/Night');
 const { validationResult } = require('express-validator');
 const mongoose = require("mongoose")
 const uploadToCloudinary = require("../utils/uploadToCloudinary")
+
+
 exports.createNight = async (req, res,next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   try {
     const body = req.body;
-  
-    const n = new Night(req.body);
+    const n = new Night(body);
     await n.save();
     res.status(201).json(n);
   } catch (err) { console.error(err);  next(err) }
 };
+
 
 exports.getAll = async (req, res, next) => {
   try {
@@ -37,10 +39,6 @@ exports.getAll = async (req, res, next) => {
       }else{
          sortBy[sort[0]] = 1;
       }
-    
-
-      console.log(sortBy);
-      
       
    const list = await Night.aggregate([
   {
