@@ -45,7 +45,64 @@ console.log(filter.type);
                 filter
         ).populate("targetId")
         }else{
+     favourites = await Favourites.aggregate([
 
+  // 1️⃣ Optional filter
+  {
+    $match: filter
+  },
+
+  // 2️⃣ Group by targetId
+  {
+    $group: {
+      _id: "$targetId",
+      users: { $addToSet: "$user" }, // avoid duplicate users
+      count: { $sum: 1 }
+    }
+  },
+
+  // 3️⃣ Lookup target details
+  {
+    $lookup: {
+      from: "type", 
+      localField: "_id",
+      foreignField: "_id",
+      as: "target"
+    }
+  },
+
+  { $unwind: "$target" },
+
+  // 4️⃣ Lookup users to get usernames
+  {
+    $lookup: {
+      from: "users",
+      localField: "users",
+      foreignField: "_id",
+      as: "usersData"
+    }
+  },
+
+  // 5️⃣ Project final shape
+  {
+    $project: {
+      _id: 0,
+      target: 1,
+      count: 1,
+      users: {
+        $map: {
+          input: "$usersData",
+          as: "u",
+          in: {
+            _id: "$$u._id",
+            username: "$$u.username"
+          }
+        }
+      }
+    }
+  }
+
+]);
         }
    
     

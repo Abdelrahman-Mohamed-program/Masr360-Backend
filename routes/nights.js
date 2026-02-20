@@ -8,6 +8,8 @@ const upload = require("../middlewares/upload")
 const validateId = require('../middlewares/validateId');
 const multiUploads = require("../middlewares/multiapleUploads");
 const { json } = require('stream/consumers');
+const Category = require("../models/Category")
+const { isValidObjectId } = require('mongoose');
 //multer file upload
 // const storage = multer.diskStorage({
 //         destination:(req,file,cb)=>{//the destination of where the file will be saved in the server
@@ -25,10 +27,10 @@ router.get('/:id', validateId,nightCtrl.getOne);
 
 router.post('/',
   upload.array('imgs',5),
-body('name').notEmpty().withMessage('name is required'),
-body('desc').notEmpty().withMessage('desc is required'),
+body('name').notEmpty().withMessage('name is required').isString(),
+body('desc').notEmpty().withMessage('desc is required').isString(),
 body('location','invalid location value').isURL().notEmpty(),
-body('locationIframe','invalid locationIframe value').isURL(),
+body('locationIframe','invalid locationIframe value').isURL().notEmpty(),
 body('translations','Invalid value for translations').customSanitizer(val=>{
   try {
     return JSON.parse(val)
@@ -46,7 +48,27 @@ body('translations','Invalid value for translations').customSanitizer(val=>{
     });
 
     return newObj;
-  })
+  }),
+ body('category').notEmpty().custom(
+ async val =>{ 
+    if (!isValidObjectId(val)) {
+      throw new Error("Invalid category id")
+    }
+    const cat = await Category.findById(val);
+    if (!cat||cat.type!="night") {
+         throw new Error("Invalid category id")
+    }
+    return true;
+  }
+ ),
+  body('governorate').notEmpty().custom(
+  val=>{
+    if (!isValidObjectId(val)) {
+      throw new Error("Invalid governorate id")
+    }
+    return true;
+  }
+ )
 ,multiUploads 
 ,nightCtrl.createNight);
 
