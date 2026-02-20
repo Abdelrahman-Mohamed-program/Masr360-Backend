@@ -24,7 +24,7 @@ exports.getAll = async (req, res, next) => {
    const category = req.query.categoryId?req.query.categoryId:"";
    const search = req.query.search||"";
    const sort = req.query.sort.split(",")||["avgRating"];
-   
+   const lang = req.query.lang.toUpperCase();
 
       let filter ={}
       if (category) {
@@ -45,7 +45,10 @@ exports.getAll = async (req, res, next) => {
     $match:{
       name:{
        $regex: search, $options: "i" 
-      },
+      },  ...(lang  && {
+        [`translations.${lang}`]: { $exists: true }
+      })
+      ,
       ...filter
     }
   },
