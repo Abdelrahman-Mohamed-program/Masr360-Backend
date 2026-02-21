@@ -76,7 +76,7 @@ router.put('/:id', validateId,upload.array('imgs',5),
 body('name').optional().isString(),
 body('desc').optional().isString(),
 body('location','invalid location value').optional().isURL(),
-body('locationIframe','invalid locationIframe value').isURL(),
+body('locationIframe','invalid locationIframe value').optional().isURL(),
 body('translations','Invalid value for translations').optional().customSanitizer(val=>{
   try {
     return JSON.parse(val)
@@ -100,6 +100,7 @@ body('translations','Invalid value for translations').optional().customSanitizer
     if (!isValidObjectId(val)) {
       throw new Error("Invalid category id")
     }
+      
     const cat = await Category.findById(val);
     if (!cat||cat.type!="night") {
          throw new Error("Invalid category id")

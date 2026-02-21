@@ -215,7 +215,8 @@ exports.getOne = async (req, res, next) => {
 exports.updateNight = async (req, res,next) => {
   try {
    const { imgs, ...rest } = req.body; 
-// newImages = array of { publicId, url }
+     const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
 const updated = await Night.findByIdAndUpdate(
   req.params.id,
@@ -231,7 +232,7 @@ const updated = await Night.findByIdAndUpdate(
 );
     if (!updated) return res.status(404).json({ message: 'Not found' });
     res.json(updated);
-  } catch (err) { console.error(err);  next(err)}
+  } catch (err) { next(err)}
 };
 
 exports.deleteNight = async (req, res,next) => {

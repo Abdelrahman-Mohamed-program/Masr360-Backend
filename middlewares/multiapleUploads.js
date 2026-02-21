@@ -5,9 +5,9 @@ const uploadToCloudinary = require("../utils/uploadToCloudinary")
 
 const multiapleUploads = async(req,res,next)=>{
 
-    console.log("req came");
+    // console.log("req came");
     
-       if (!req.files.length) {
+       if (!req.files.length&&req.method=="POST") {
       return res.status(400).json({
          "errors": [
         {
