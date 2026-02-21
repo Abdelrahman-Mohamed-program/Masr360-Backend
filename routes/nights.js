@@ -72,7 +72,49 @@ body('translations','Invalid value for translations').customSanitizer(val=>{
 ,multiUploads 
 ,nightCtrl.createNight);
 
-router.put('/:id', validateId,upload.array('imgs',5),multiUploads , nightCtrl.updateNight);
+router.put('/:id', validateId,upload.array('imgs',5),
+body('name').optional().isString(),
+body('desc').optional().isString(),
+body('location','invalid location value').optional().isURL(),
+body('locationIframe','invalid locationIframe value').isURL(),
+body('translations','Invalid value for translations').optional().customSanitizer(val=>{
+  try {
+    return JSON.parse(val)
+  } catch (error) {
+    throw new Error('Invalid value for translations')
+  }
+}).customSanitizer((val) => {
+    if (typeof val !== 'object' || val === null) 
+      throw new Error('Invalid value for translations')
+
+    const newObj = {};
+
+    Object.keys(val).forEach((key) => {
+      newObj[key.toUpperCase()] = val[key];
+    });
+
+    return newObj;
+  }),
+ body('category').optional().custom(
+ async val =>{ 
+    if (!isValidObjectId(val)) {
+      throw new Error("Invalid category id")
+    }
+    const cat = await Category.findById(val);
+    if (!cat||cat.type!="night") {
+         throw new Error("Invalid category id")
+    }
+    return true;
+  }
+ ),
+  body('governorate').optional().custom(
+  val=>{
+    if (!isValidObjectId(val)) {
+      throw new Error("Invalid governorate id")
+    }
+    return true;
+  }
+ ),multiUploads , nightCtrl.updateNight);
 router.delete('/:id', validateId, nightCtrl.deleteNight);
 
 module.exports = router;
