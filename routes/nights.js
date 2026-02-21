@@ -24,7 +24,7 @@ const { isValidObjectId } = require('mongoose');
 
 router.get('/', nightCtrl.getAll);
 router.get('/:id', validateId,nightCtrl.getOne);
-
+router.use(authMiddleware,adminOnly);
 router.post('/',
   upload.array('imgs',5),
 body('name').notEmpty().withMessage('name is required').isString(),

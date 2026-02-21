@@ -40,6 +40,8 @@ exports.getAll = async (req, res, next) => {
          sortBy[sort[0]] = 1;
       }
       
+      
+      
    const list = await Night.aggregate([
   {
     $match:{

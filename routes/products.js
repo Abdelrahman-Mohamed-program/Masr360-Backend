@@ -12,7 +12,7 @@ const Category = require('../models/Category');
 
 router.get('/', productCtrl.getAll);
 router.get('/:id',validateId,productCtrl.getOne);
-
+router.use(authMiddleware,adminOnly)
 router.post('/', upload.array('imgs',5),
   body('name', 'name required').notEmpty().isString(),
    body('desc', 'desc required').notEmpty().isString(),

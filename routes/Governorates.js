@@ -18,6 +18,7 @@ const upload = multer({ storage });
 router.get('/', govCtrl.getAll);
 router.get('/:id',validateId, govCtrl.getOne);
 
+router.use(authMiddleware,adminOnly);
 router.post('/',
 upload.single('img'), 
 [

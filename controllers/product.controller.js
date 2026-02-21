@@ -20,7 +20,7 @@ exports.createProduct = async (req, res,next) => {
 
 exports.getAll = async (req, res, next) => {
   try {
-    const {
+    let {
       page = 1,
       limit = 10,
       search,
@@ -28,16 +28,25 @@ exports.getAll = async (req, res, next) => {
       maxPrice,
       stock,
       category,
-      sort
+      sort,
+      lang
     } = req.query;
-
+    lang = lang.toUpperCase();
     const matchStage = {};
 
     // 🔎 Search (name or title)
     if (search) {
       matchStage.name = { $regex: search, $options: "i" };
     }
+    console.log("this is the lang " + lang);
+    
+    if (lang) {
+     matchStage[`translations.${lang}`] = {$exists:true}
+     
+    }
 
+    // console.log(matchStage);
+    
     // 💰 Price range
     if (minPrice || maxPrice) {
       matchStage.price = {};
@@ -72,10 +81,14 @@ if (sort) {
     };
   }
 }
+console.log(matchStage);
 
     const products = await Product.aggregate([
       // 🔥 Apply filters
-      { $match: matchStage },
+      { $match: matchStage
+        
+      
+    },
 
       // 🔥 Join reviews
       {
