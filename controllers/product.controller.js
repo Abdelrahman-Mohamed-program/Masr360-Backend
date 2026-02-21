@@ -266,7 +266,8 @@ exports.updateProduct = async (req, res,next) => {
   try {
      const { imgs, ...rest } = req.body; 
     // newImages = array of { publicId, url }
-    
+     const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
     const updated = await Product.findByIdAndUpdate(
       req.params.id,
       {
