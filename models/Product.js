@@ -17,7 +17,10 @@ const productSchema = new mongoose.Schema({
     { type: Number, default: 0,min:0,max:100,required: true  }
   ,
     category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' ,required:true},
-    lang:{type:String,required:true,enum:["AR","EN" ]},
+   
+     translations:{
+       type:Object,required:true,
+     }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', productSchema);
