@@ -10,6 +10,7 @@ const multiUploads = require("../middlewares/multiapleUploads");
 const { json } = require('stream/consumers');
 const Category = require("../models/Category")
 const { isValidObjectId } = require('mongoose');
+const validation = require("../middlewares/checkValidation")
 //multer file upload
 // const storage = multer.diskStorage({
 //         destination:(req,file,cb)=>{//the destination of where the file will be saved in the server
@@ -24,7 +25,7 @@ const { isValidObjectId } = require('mongoose');
 
 router.get('/', nightCtrl.getAll);
 router.get('/:id', validateId,nightCtrl.getOne);
-router.use(authMiddleware,adminOnly);
+router.use(authMiddleware,validation,adminOnly);
 router.post('/',
   upload.array('imgs',5),
 body('name').notEmpty().withMessage('name is required').isString(),

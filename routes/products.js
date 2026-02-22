@@ -12,7 +12,9 @@ const validation = require("../middlewares/checkValidation")
 
 router.get('/', productCtrl.getAll);
 router.get('/:id',validateId,productCtrl.getOne);
+
 router.use(authMiddleware,validation,adminOnly);
+
 router.post('/', upload.array('imgs',5),
   body('name', 'name required').notEmpty().isString(),
    body('desc', 'desc required').notEmpty().isString(),
@@ -87,6 +89,7 @@ router.put('/:id', validateId, upload.array('imgs',5),
                     return true;
                   }
                  ),multiapleUploads,productCtrl.updateProduct);
+                 
 router.delete('/:id',validateId,  productCtrl.deleteProduct);
 
 module.exports = router;
